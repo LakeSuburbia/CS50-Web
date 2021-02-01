@@ -4,6 +4,6 @@
     <h2>Active Listings</h2>
 
     {% for item in listings %}
-        {{ item.product }}
+    <p>{{item.seller}} is selling {{item.product}} for a minimum price of {{item.price}} euro."</p>
     {% endfor %}
 {% endblock %}
