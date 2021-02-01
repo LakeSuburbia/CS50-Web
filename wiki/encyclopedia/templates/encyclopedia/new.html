@@ -1,0 +1,25 @@
+{% extends 'encyclopedia/layout.html' %}
+
+{% block title %}
+    Create a new page
+{% endblock %}
+
+{% block body %}
+    <h1>Create a new page</h1>
+
+    {% if error == "exists"%}
+        <h2> THIS ENTRY EXISTS ALREADY </h2>
+    {% elif error == "invalid"%}
+        <h2> YOUR INPUT IS INVALID </h2>
+    {% endif %}
+    <form action="{% url 'new' %}" method="post">
+        {% csrf_token %}
+        <div> 
+            {{ form.title }}
+        </div>
+        <div>
+            {{ form.markdown }}
+        </div>
+        <input type="submit">
+    </form>
+{% endblock %}
