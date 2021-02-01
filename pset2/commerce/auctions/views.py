@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import Listing, User
 
 
 def index(request):
@@ -61,3 +61,26 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+def createListing(request):
+    if request.method == "POST":
+
+        form = Listing(request.POST, request.FILES)
+
+        if form.is_valid():
+            listing = form.save(commit=False)
+
+            listing.owner = request.user
+
+            listing.save()
+
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return render(request, "auctions/make_listing.html", {
+                "form": form,
+                "message": "Write only one category and only letters"
+            })
+
+    return render(request, "auctions/make_listing.html", {
+        "form": ListingForm()
+    })
