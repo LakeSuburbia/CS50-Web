@@ -1,0 +1,99 @@
+form{
+    float:center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+.box{
+    width: 560px;
+  border: 1px solid #e4e4e4;
+  border-radius: 24px;
+  padding: 16px 40px;
+  display: flex;
+  float: center;
+  margin-left: auto;
+    margin-right: auto;
+}
+
+.button {
+    background-image: -webkit-linear-gradient(top, #f5f5f5, #f1f1f1);
+    background-color: #f2f2f2;
+    border: 1px solid #f2f2f2;
+    border-radius: 4px;
+    color: #5F6368;
+    font-family: arial, sans-serif;
+    font-size: 14px;
+    margin: 11px 4px;
+    padding: 0 16px;
+    line-height: 27px;
+    height: 36px;
+    min-width: 52px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+}
+  
+.search{
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+#knop{
+    display: table;
+    margin: 0 auto;
+  }
+  
+  
+  
+#nav{
+    margin-left: auto;
+    margin-right: 20px;
+    margin-top: 20px;
+    font-family: arial;
+  }
+  
+  img{
+    max-width: 400px;
+    display: table;
+    margin: 0 auto;
+  }
+
+
+  .text-area{
+      width: 90%;
+  }
+
+  .labels{
+      text-align: right;
+  }
+
+.col{
+    font-family: Arial; 
+    color:#777; 
+    font-size: 12px; 
+    text-align: left;
+}
+
+#table-head{
+    text-align: left;
+    font-size: 18px;
+    margin: 20px;
+    font-family: Arial;
+    font-weight: inherit;
+    font-style: inherit;
+    color: #333
+}
+
+#advanced-btn{
+    font-family: Arial; 
+    border-radius: 5px;
+    border: 2px solid blue;
+    padding: 5px;
+    background-color: blue;
+    color: white ;
+    margin-left: 500px;
+    size: 10px;
+    margin-top: 10px;
+}
+  
