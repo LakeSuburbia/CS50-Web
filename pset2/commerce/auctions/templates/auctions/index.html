@@ -4,6 +4,8 @@
     <h2>Active Listings</h2>
 
     {% for item in listings %}
-    <p>{{item.seller}} is selling {{item.product}} for a minimum price of {{item.price}} euro."</p>
+    <h3> {{item.product}}</h3>
+    <img src="{{ item.image.url }}" alt="image" style="width: 300px; height: auto">
+    <p>{{item.seller}} is selling {{item.product}} for a minimum price of {{item.price}} euro.</p>
     {% endfor %}
 {% endblock %}
