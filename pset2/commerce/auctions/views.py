@@ -3,7 +3,6 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-
 from .models import Listing, User
 
 
@@ -64,6 +63,3 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
-
-def defaultImage(request):
-    return("auctions/images/image-not-found.jpg")
