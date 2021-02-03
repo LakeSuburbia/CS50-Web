@@ -63,3 +63,24 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+def sell(request):
+    if request.method == "POST":
+        seller = request.user
+        product = request.POST["product"]
+        description = request.POST["description"]
+        price = request.POST["price"]
+        image = request.POST["image"]
+    
+        try:
+            listing = Listing(seller = seller, product = product, description = description, price = price, image = image)
+            listing.save()
+        except IntegrityError:
+            return render(request, "auctions/sell.html", {
+                "message": "Listing is in conflict with another listing"
+            })
+        return HttpResponseRedirect(reverse("index"))
+    else:
+        return render(request, "auctions/sell.html")
+
+       
