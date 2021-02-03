@@ -5,7 +5,12 @@
 
     {% for item in listings %}
     <h3> {{item.product}}</h3>
-    <img src="{{ item.image.url }}" alt="image" style="width: 300px; height: auto">
+    {% load static %}
+    <!--
+    <img src="{{ item.image.url }}" alt="My image">
+    -->
+    <img src="{% static item.image.url %}" alt="image" style="width: 300px; height: auto">
+    
     <p>{{item.seller}} is selling {{item.product}} for a minimum price of {{item.price}} euro.</p>
     {% endfor %}
 {% endblock %}
