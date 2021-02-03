@@ -2,27 +2,32 @@
 
 {% block body %}
     <h2>Active Listings</h2>
+    <br> </br>
 
     {% if message %}
         <div>{{ message }}</div>
     {% endif %}
-
+    <div class="container">
+        <div class="row">
     {% for item in listings %}
-    <h3> {{item.product}}</h3>
-    {% load static %}
-    <!--
-    <img src="{{ item.image.url }}" alt="My image">
-    -->
-    <img src="{{ item.image }}" alt="image" style="width: 300px; height: auto">
-    
-    <p>{{item.seller}} is selling {{item.product}} for a minimum price of {{item.price}} euro.</p>
-    <form action="{{ bid }}" method="post">
-        {% csrf_token %}
-        
-        <div class="form-group">
-            <input class="form-control" type="number" name="price" placeholder="bid">
+        <div class="col-sm">
+            <h3><a href="/{{item.product}}"> {{item.product}} </a></h3>
+            <p></p>
+            {% load static %}
+            <a  href="/{{item.product}}"><img src="{{ item.image }}" alt="image" style="height: 100px;"></a>
+            
+        <p> </p>
+            <p>Current price: €{{item.price}} </p>
+            <p>Posted by: {{item.seller}}</p> 
+            
         </div>
-        <input class="btn btn-primary" type="submit" value="bid">
-    </form>
+        {% if forloop.last %}
+            </div>
+        {% else %}
+            {% if forloop.counter|divisibleby:"3" %}
+                </div><div class="row">
+            {% endif %}
+    {% endif %}
     {% endfor %}
+</div>
 {% endblock %}

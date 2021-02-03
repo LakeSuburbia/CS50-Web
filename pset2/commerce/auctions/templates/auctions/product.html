@@ -1,0 +1,32 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ product }}</h2>
+    <img src="{{ image }}" alt="image" style="width: 300px; height: auto">
+    
+    <p>{{seller}} is selling {{product}} for a minimum price of {{price}} euro.</p>
+    <br>
+    <h5>description: </h5>
+    <p>{{description}}</p>
+    <span style="font-size:smaller">
+        <p>Seller: {{seller}}
+            <br>
+        Current price: {{price}}</p>
+    </span>
+    <br>
+    {% if user.is_authenticated %}
+    <div class="form-wrapper">
+        <form action="{{product}}" method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <input class="form-control" type="number" name="prijs" placeholder="bid" min="{{price|add:1}}">
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="bid">
+        </form>
+    </div>
+    {% else %}
+        <p></p><i>If you want to bid, you need to login first</i></p>
+    {% endif %}
+{% endblock %}

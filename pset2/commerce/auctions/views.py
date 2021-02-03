@@ -87,12 +87,29 @@ def sell(request):
         return render(request, "auctions/sell.html")
 
        
-def bid(request, listingid):
+def product(request, product):
+
+    product=Listing.objects.get(product__iexact=product.lower())
+    if product:
+        return render(request, "auctions/product.html",{
+            "product": product.product,
+            "price": product.price,
+            "description": product.description,
+            "seller": product.seller,
+            "image": product.image
+            })
+    else:
+        return render(request, index.html)
+    
+
+
+
+def bid(request, product):
     if request.method == "post":
         if request.user.is_authenticated:
             price = request.POST["price"]
             buyer = request.user
-            listing = Listing.objects.get(id=listingid)
+            listing = product
 
             try:
                 bid = Bid(price = price, buyer = buyer, listing = listing)
