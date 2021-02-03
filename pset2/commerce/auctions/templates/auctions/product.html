@@ -16,11 +16,11 @@
     <br>
     {% if user.is_authenticated %}
     <div class="form-wrapper">
-        <form action="{{product}}" method="post">
+        <form action="{% url 'bid' id %}" method="post">
             {% csrf_token %}
             
             <div class="form-group">
-                <input class="form-control" type="number" name="prijs" placeholder="bid" min="{{price|add:1}}">
+                <input class="form-control" type="number" name="price" placeholder="bid" min="{{price|add:1}}">
             </div>
 
             <input class="btn btn-primary" type="submit" value="bid">

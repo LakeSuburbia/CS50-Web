@@ -7,6 +7,14 @@ from .models import Bid, Listing, User
 
 
 def index(request):
+    for product in Listing.objects.all():
+        AllCurrentBids = Bid.objects.filter(listing=product.id)
+        highest = product.price
+        for bids in AllCurrentBids:
+            highest = max(highest, bids.price)
+        product.price = highest
+        product.save()
+
     return render(request, "auctions/index.html",
     {
         "listings": Listing.objects.all()
@@ -87,13 +95,14 @@ def sell(request):
         return render(request, "auctions/sell.html")
 
        
-def product(request, product):
+def product(request, productid):
 
-    product=Listing.objects.get(product__iexact=product.lower())
+    product=Listing.objects.get(id=productid)
     if product:
         return render(request, "auctions/product.html",{
+            "id": product.id,
             "product": product.product,
-            "price": product.price,
+            "price": highestBid(product),
             "description": product.description,
             "seller": product.seller,
             "image": product.image
@@ -104,23 +113,39 @@ def product(request, product):
 
 
 
-def bid(request, product):
-    if request.method == "post":
+def bid(request, productid):
+    if request.method == "POST":
         if request.user.is_authenticated:
-            price = request.POST["price"]
+            product = Listing.objects.get(id=productid)
+            price = request.POST['price']
             buyer = request.user
-            listing = product
 
-            try:
-                bid = Bid(price = price, buyer = buyer, listing = listing)
-                bid.save()
-            except IntegrityError:
-                return render(request, "auctions/index.html", {
-                    "message": "Bid did not work"
-                })
-            
-            return render(request, "auctions/index.html")
-        else:
-            return render(request, "auctions/login.html")
-    else:
-        return render(request, "auctions/index.html")
+            bid = Bid(price = price, buyer = buyer, listing = productid)
+            bid.save()
+
+            return render(request, "auctions/product.html",{
+            "id": product.id,
+            "product": product.product,
+            "price": price,
+            "description": product.description,
+            "seller": product.seller,
+            "image": product.image
+            })
+
+
+def highestBid(product):
+    AllCurrentBids = Bid.objects.filter(id=product.id)
+    highest = product.price
+    for bids in AllCurrentBids:
+        max(highest, bids.price)
+    return highest
+
+def highestID(product):
+    AllCurrentBids = Bid.objects.filter(id=product)
+    highest = product.price
+    highID = -1
+    for bids in AllCurrentBids:
+        if highest < bids.price:
+            highest = bids.price
+            highID = bids.id
+    return highID        

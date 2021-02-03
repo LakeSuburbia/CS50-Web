@@ -5,6 +5,8 @@ from django.db.models.fields.related import ForeignKey
 from django.core.validators import MinValueValidator
 
 
+
+
 class User(AbstractUser):
     pass
 
@@ -22,3 +24,8 @@ class Bid (models.Model):
     price = models.DecimalField(max_digits=10 ,decimal_places=2, default=0, validators=[MinValueValidator(0)])
     buyer = models.ForeignKey(User, on_delete=CASCADE, related_name="buyers")
     listing = models.ForeignKey(Listing, on_delete=CASCADE, related_name="bids")
+
+    def __str__(self):
+        return f"{self.buyer} Plaatst een bod op product: {self.listing.product} van {self.price} euro"
+
+    
