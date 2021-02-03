@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .models import Listing, User
+from .models import Bid, Listing, User
 
 
 def index(request):
@@ -66,21 +66,44 @@ def register(request):
 
 def sell(request):
     if request.method == "POST":
-        seller = request.user
-        product = request.POST["product"]
-        description = request.POST["description"]
-        price = request.POST["price"]
-        image = request.POST["image"]
+        if request.user.is_authenticated:
+            seller = request.user
+            product = request.POST["product"]
+            description = request.POST["description"]
+            price = request.POST["price"]
+            image = request.POST["image"]
     
-        try:
-            listing = Listing(seller = seller, product = product, description = description, price = price, image = image)
-            listing.save()
-        except IntegrityError:
-            return render(request, "auctions/sell.html", {
-                "message": "Listing is in conflict with another listing"
-            })
-        return HttpResponseRedirect(reverse("index"))
+            try:
+                listing = Listing(seller = seller, product = product, description = description, price = price, image = image)
+                listing.save()
+            except IntegrityError:
+                return render(request, "auctions/sell.html", {
+                    "message": "Listing is in conflict with another listing"
+                })
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return render(request, "auctions/login.html")
     else:
         return render(request, "auctions/sell.html")
 
        
+def bid(request, listingid):
+    if request.method == "post":
+        if request.user.is_authenticated:
+            price = request.POST["price"]
+            buyer = request.user
+            listing = Listing.objects.get(id=listingid)
+
+            try:
+                bid = Bid(price = price, buyer = buyer, listing = listing)
+                bid.save()
+            except IntegrityError:
+                return render(request, "auctions/index.html", {
+                    "message": "Bid did not work"
+                })
+            
+            return render(request, "auctions/index.html")
+        else:
+            return render(request, "auctions/login.html")
+    else:
+        return render(request, "auctions/index.html")

@@ -3,6 +3,10 @@
 {% block body %}
     <h2>Active Listings</h2>
 
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
     {% for item in listings %}
     <h3> {{item.product}}</h3>
     {% load static %}
@@ -12,5 +16,13 @@
     <img src="{{ item.image }}" alt="image" style="width: 300px; height: auto">
     
     <p>{{item.seller}} is selling {{item.product}} for a minimum price of {{item.price}} euro.</p>
+    <form action="{{ bid }}" method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <input class="form-control" type="number" name="price" placeholder="bid">
+        </div>
+        <input class="btn btn-primary" type="submit" value="bid">
+    </form>
     {% endfor %}
 {% endblock %}
