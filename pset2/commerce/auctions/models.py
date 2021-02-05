@@ -17,6 +17,8 @@ class Listing(models.Model):
     price = models.DecimalField(max_digits=10 ,decimal_places=2, default=0, validators=[MinValueValidator(0)])
     image = models.URLField(default="https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg")
     category = models.CharField(max_length=20)
+    active = models.BooleanField(default=True)
+    newOwner = models.ForeignKey(User, on_delete=CASCADE, related_name="newowner")
 
     def __str__(self):
         return f"{self.seller} is selling {self.product} for a minimum price of {self.price} euro."

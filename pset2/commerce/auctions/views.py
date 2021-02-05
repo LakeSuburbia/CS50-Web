@@ -5,6 +5,25 @@ from django.shortcuts import render
 from django.urls import reverse
 from .models import Bid, Listing, User
 
+def highestBid(product):
+    AllCurrentBids = Bid.objects.filter(listing=product.id)
+    highest = product.price
+    for bids in AllCurrentBids:
+        highest = max(highest, bids.price)
+    product.price = highest
+    product.save()
+
+def highestID(product):
+    AllCurrentBids = Bid.objects.filter(id=product)
+    highest = product.price
+    highID = -1
+    for bids in AllCurrentBids:
+        if highest < bids.price:
+            highest = bids.price
+            highID = bids.id
+    return highID     
+
+
 
 def index(request):
     for product in Listing.objects.all():
@@ -94,18 +113,16 @@ def product(request, productid):
     product=Listing.objects.get(id=productid)
     if product:
         highestBid(product)
-        return render(request, "auctions/product.html",{
-            "id": product.id,
-            "product": product.product,
-            "price": product.price,
-            "description": product.description,
-            "seller": product.seller,
-            "image": product.image,
-            "category": product.category
-        })
+        return renderProduct(request, productid=productid)
     else:
         return render(request, index.html)
     
+
+def deactivateProduct(request, productid):
+    product = Listing.objects.get(id=productid)
+    product.active = False
+    product.save()
+    return renderProduct(request, productid=productid)
 
 
 
@@ -119,30 +136,19 @@ def bid(request, productid):
         bid.save()
         highestBid(product)
 
-        return render(request, "auctions/product.html",{
+        return renderProduct(request, productid=productid)
+
+
+def renderProduct(request, productid):
+    product = Listing.objects.get(id=productid)
+    return render(request, "auctions/product.html",{
         "id": product.id,
         "product": product.product,
         "price": product.price,
         "description": product.description,
         "seller": product.seller,
-        "image": product.image
+        "image": product.image,
+        "active": product.active,
+        "newOwner": product.newOwner,
+        "category": product.category
         })
-
-
-def highestBid(product):
-    AllCurrentBids = Bid.objects.filter(listing=product.id)
-    highest = product.price
-    for bids in AllCurrentBids:
-        highest = max(highest, bids.price)
-    product.price = highest
-    product.save()
-
-def highestID(product):
-    AllCurrentBids = Bid.objects.filter(id=product)
-    highest = product.price
-    highID = -1
-    for bids in AllCurrentBids:
-        if highest < bids.price:
-            highest = bids.price
-            highID = bids.id
-    return highID        
