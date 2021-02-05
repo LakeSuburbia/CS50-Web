@@ -100,7 +100,8 @@ def product(request, productid):
             "price": product.price,
             "description": product.description,
             "seller": product.seller,
-            "image": product.image
+            "image": product.image,
+            "category": product.category
         })
     else:
         return render(request, index.html)
