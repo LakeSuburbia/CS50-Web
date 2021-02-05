@@ -13,31 +13,33 @@
             <br>
         Current price: {{price}}
             <br>
-        category: {{category}}
+        Category: {{category}}
+            <br>
+        Highest bidder: {{newOwner}}
     </p>
     </span>
     <br>
     {% if user.is_authenticated and active %}
-    <div class="form-wrapper">
-        <form action="{% url 'bid' id %}" method="post">
-            {% csrf_token %}
-            
-            <div class="form-group">
-                <input class="form-control" type="number" name="price" placeholder="bid" min="{{price|add:1}}">
-            </div>
-
-            <input class="btn btn-primary" type="submit" value="bid">
-        </form>
-    </div>
         {% if user == seller %}
-        <div class="form-wrapper">
-            <form action="{% url 'deactivateProduct' id %}" method="post">
-                {% csrf_token %}
-                <input class="btn btn-primary" type="submit" value="deactivate">
-            </form>
-        </div>
-    
-    {% endif %}
+            <div class="form-wrapper">
+                <form action="{% url 'deactivateProduct' id %}" method="post">
+                    {% csrf_token %}
+                    <input class="btn btn-primary" type="submit" value="deactivate">
+                </form>
+            </div>
+        {% else %}
+            <div class="form-wrapper">
+                <form action="{% url 'bid' id %}" method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <input class="form-control" type="number" name="price" placeholder="bid" min="{{price|add:1}}">
+                    </div>
+
+                    <input class="btn btn-primary" type="submit" value="bid">
+                </form>
+            </div> 
+        {% endif %}
     {% elif active %}
         <p><i>If you want to bid, you need to login first</i></p>
     {% else %}

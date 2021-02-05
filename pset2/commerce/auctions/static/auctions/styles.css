@@ -2,9 +2,12 @@
 body {
     padding: 10px;
     text-align: center;
+    background-color: white;
 }
 
 .form-wrapper{
+    margin-left:auto;
+    margin-right: auto;
     align-self: center;
     display: block;
     width: 200px;
