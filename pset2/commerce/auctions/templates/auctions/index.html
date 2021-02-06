@@ -10,7 +10,6 @@
     <div class="container">
         <div class="row">
     {% for item in listings %}
-        {% if item.active %}
         <div class="col-sm">
             <h3><a href="product/{{item.id}}"> {{item.product}} </a></h3>
             <p></p>
@@ -28,7 +27,6 @@
         {% else %}
             {% if forloop.counter|divisibleby:"3" %}
                 </div><div class="row">
-            {% endif %}
             {% endif %}
     {% endif %}
     {% endfor %}

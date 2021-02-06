@@ -135,8 +135,6 @@ def bid(request, productid):
         bid = Bid(price = price, buyer = buyer, listing = product)
         bid.save()
         highestBid(product)
-        product.newOwner = buyer
-        product.save()
 
         return renderProduct(request, productid=productid)
 
