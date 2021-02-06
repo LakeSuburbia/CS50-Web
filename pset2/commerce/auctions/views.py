@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .models import Bid, Listing, User, Watchlist
+from .models import Bid, Listing, User
 
 def highestBid(product):
     AllCurrentBids = Bid.objects.filter(listing=product.id)
@@ -141,10 +141,6 @@ def bid(request, productid):
 
 def renderProduct(request, productid):
     product = Listing.objects.get(id=productid)
-    watcher = request.user
-    watchee = Listing.objects.get(id=productid)
-    watchitemUsers = Watchlist.object.filter(watcher = watcher)
-    watchitem = watchitemUsers.object.filter(watchee = watchee)
     return render(request, "auctions/product.html",{
         "id": product.id,
         "product": product.product,
@@ -154,6 +150,7 @@ def renderProduct(request, productid):
         "image": product.image,
         "active": product.active,
         "newOwner": product.newOwner,
+<<<<<<< HEAD
         "category": product.category,
         "watchid": watchitem.id,
         "watcher": watchitem.watcher,
@@ -176,3 +173,7 @@ def watchlistAdd(request, productid):
                 watchitem.active = False
                 watchitem.save()
     return renderProduct(request, productid=productid)
+=======
+        "category": product.category
+        })
+>>>>>>> parent of 9a49195... Eerste poging watchlist

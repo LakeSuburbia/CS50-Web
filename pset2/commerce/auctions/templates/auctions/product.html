@@ -30,16 +30,6 @@
                     <input class="btn btn-primary" type="submit" value="bid">
                 </form>
             </div> 
-            <div class="form-wrapper">
-                <form action="{% url 'watchlistAdd' watchid %}" method="post">
-                    {% csrf_token %}
-                    {% if  %}
-                        <input class="btn btn-primary" type="submit" value="watchlistAdd" placeholder="Add to Watchlist">
-                    {% else %}
-                        <input class="btn btn-primary" type="submit" value="watchlistAdd" placeholder="Delete from Watchlist">
-                    {% endif %}
-                </form>
-            </div> 
         {% endif %}
 =======
             <input class="btn btn-primary" type="submit" value="bid">

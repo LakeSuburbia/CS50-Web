@@ -32,8 +32,3 @@ class Bid (models.Model):
         return f"{self.buyer} Plaatst een bod op product: {self.listing.product} van {self.price} euro"
 
     
-class Watchlist (models.Model):
-    watcher = models.ForeignKey(User, on_delete=CASCADE, related_name="watcher")
-    watchee = models.ForeignKey(Listing, on_delete=CASCADE, related_name="watchee")
-    active = models.BooleanField(default=True)
-
