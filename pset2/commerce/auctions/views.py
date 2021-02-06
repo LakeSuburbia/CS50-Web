@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .models import Bid, Listing, User
+from .models import Bid, Listing, User, Comment
 
 def highestBid(product):
     AllCurrentBids = Bid.objects.filter(listing=product.id)
@@ -30,7 +30,7 @@ def index(request):
         highestBid(product)
     return render(request, "auctions/index.html",
     {
-        "listings": Listing.objects.all()
+        "listings": Listing.objects.filter(active=True)
     })
 
 
@@ -138,9 +138,24 @@ def bid(request, productid):
 
         return renderProduct(request, productid=productid)
 
+def comment(request, productid):
+    if request.method == "POST":
+        product = Listing.objects.get(id=productid)
+        comment = request.POST['comment']
+        commenter = request.user
+
+        comment = Comment(commenter = commenter, comment = comment, product = product)
+        comment.save()
+
+    return renderProduct(request, productid=productid)
+
 
 def renderProduct(request, productid):
     product = Listing.objects.get(id=productid)
+    try:
+        comments = Comment.objects.filter(product=product)
+    except:
+        comments = None
     return render(request, "auctions/product.html",{
         "id": product.id,
         "product": product.product,
@@ -150,30 +165,7 @@ def renderProduct(request, productid):
         "image": product.image,
         "active": product.active,
         "newOwner": product.newOwner,
-<<<<<<< HEAD
         "category": product.category,
-        "watchid": watchitem.id,
-        "watcher": watchitem.watcher,
-        "watchee": watchitem.watchee,
-        "watchactive": watchitem.active 
+        "comments": comments
         })
 
-def watchlistAdd(request, productid):
-    if request.method == "POST":
-        if request.user.is_authenticated:
-            watcher = request.user
-            watchee = Listing.objects.get(id=productid)
-            if request.active:
-                watchitem = Watchlist(watcher = watcher, watchee = watchee)
-                watchitem.save()
-
-            else:
-                watchitemUsers = Watchlist.object.filter(watcher = watcher)
-                watchitem = watchitemUsers.object.filter(watchee = watchee)
-                watchitem.active = False
-                watchitem.save()
-    return renderProduct(request, productid=productid)
-=======
-        "category": product.category
-        })
->>>>>>> parent of 9a49195... Eerste poging watchlist

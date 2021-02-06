@@ -22,7 +22,13 @@
             <p>Posted by: {{item.seller}}</p> 
             
         </div>
+
         {% if forloop.last %}
+            {% if forloop.counter|divisibleby:"3" %}
+            {% else %}
+            <div class="col-sm">
+                <p></p>
+            {% endif %}
             </div>
         {% else %}
             {% if forloop.counter|divisibleby:"3" %}

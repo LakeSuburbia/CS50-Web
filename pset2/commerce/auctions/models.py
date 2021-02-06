@@ -32,3 +32,7 @@ class Bid (models.Model):
         return f"{self.buyer} Plaatst een bod op product: {self.listing.product} van {self.price} euro"
 
     
+class Comment (models.Model):
+    commenter = models.ForeignKey(User, on_delete=CASCADE, related_name="commenter")
+    product = models.ForeignKey(Listing, on_delete=CASCADE, related_name="commentproduct")
+    comment = models.CharField(max_length=256)
