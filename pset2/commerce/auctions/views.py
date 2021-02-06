@@ -169,7 +169,7 @@ def watchlistAdd(request, productid):
             watcher = request.user
             watchee = Listing.objects.get(id=productid)
             if request.active:
-                watchitem = Watchlist(watcher = watcher, watchee = watchee, active = True)
+                watchitem = Watchlist(watcher = watcher, watchee = watchee)
                 watchitem.save()
 
             else:
