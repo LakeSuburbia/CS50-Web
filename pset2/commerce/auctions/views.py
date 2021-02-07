@@ -1,3 +1,4 @@
+from typing import List
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -169,3 +170,10 @@ def renderProduct(request, productid):
         "comments": comments
         })
 
+def category(request):
+    listings = Listing.objects.filter(category=request.category)
+
+    return render(request, "auctions/category.html",{
+        "category": request.category,
+        "listings": listings
+        })
