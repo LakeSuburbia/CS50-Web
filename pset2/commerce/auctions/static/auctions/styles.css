@@ -11,3 +11,11 @@ body {
     display: block;
     width: 200px;
 }
+
+.form-group{
+    align-self: center;
+    margin-right:auto;
+    margin-left:auto;
+    display: block;
+    width: 200px;
+}
