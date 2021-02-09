@@ -177,3 +177,10 @@ def category(request, category):
         "category": category,
         "listings": listings
         })
+
+
+def category_overview(request):
+    categories = Listing.objects.order_by().values('category').distinct()
+    return render(request, "auction/category_overview.html",{
+        "categories": categories
+    })

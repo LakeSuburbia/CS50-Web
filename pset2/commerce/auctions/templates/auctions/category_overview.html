@@ -1,0 +1,12 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+{% categories == None %}
+{% else %}
+<ul>
+    {% for category in categories %}
+        <li>{{ category.category }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

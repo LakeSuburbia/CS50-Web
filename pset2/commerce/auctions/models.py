@@ -23,6 +23,7 @@ class Listing(models.Model):
     def __str__(self):
         return f"{self.seller} is selling {self.product} for a minimum price of {self.price} euro."
 
+
 class Bid (models.Model):
     price = models.DecimalField(max_digits=10 ,decimal_places=2, default=0, validators=[MinValueValidator(0)])
     buyer = models.ForeignKey(User, on_delete=CASCADE, related_name="buyers")
