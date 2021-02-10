@@ -167,7 +167,8 @@ def renderProduct(request, productid):
         "active": product.active,
         "newOwner": product.newOwner,
         "category": product.category,
-        "comments": comments
+        "comments": comments,
+        "watchlist": product.watchlist
         })
 
 def category(request, category):
@@ -183,4 +184,12 @@ def category_overview(request):
     categories = Listing.objects.order_by().values('category').distinct()
     return render(request, "auction/category_overview.html",{
         "categories": categories
+    })
+
+def watchlist(request):
+    for product in Listing.objects.all():
+        highestBid(product)
+    return render(request, "auctions/index.html",
+    {
+        "listings": Listing.objects.filter(active=True)
     })

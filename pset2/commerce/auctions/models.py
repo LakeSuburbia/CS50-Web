@@ -19,6 +19,7 @@ class Listing(models.Model):
     category = models.CharField(max_length=20)
     active = models.BooleanField(default=True)
     newOwner = models.ForeignKey(User, on_delete=CASCADE, related_name="newowner")
+    watchlist = models.ManyToManyField(User)
 
     def __str__(self):
         return f"{self.seller} is selling {self.product} for a minimum price of {self.price} euro."

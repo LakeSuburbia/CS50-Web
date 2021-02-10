@@ -1,0 +1,35 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ user }}'s watchlist</h2>
+    <br> </br>
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+    <div class="container">
+        <div class="row">
+    {% for item in listings %}
+        <div class="col-sm-4">
+            <h3><a href="product/{{item.id}}"> {{item.product}} </a></h3>
+            <p></p>
+            {% load static %}
+            <a  href="product/{{item.id}}"><img src="{{ item.image }}" alt="image" style="height: 100px;"></a>
+            
+        <p> </p>
+    
+            <p>Current price: €{{item.price}}</p>
+            <p>Posted by: {{item.seller}}</p> 
+            
+        </div>
+
+        {% if forloop.last %}
+            </div>
+        {% else %}
+            {% if forloop.counter|divisibleby:"3" %}
+                </div><div class="row">
+            {% endif %}
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
