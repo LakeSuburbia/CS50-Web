@@ -186,6 +186,10 @@ def category_overview(request):
         "categories": categories
     })
 
+def add_watchlist(request):
+    product = request.productid
+
+
 def watchlist(request):
     for product in Listing.objects.all():
         highestBid(product)
