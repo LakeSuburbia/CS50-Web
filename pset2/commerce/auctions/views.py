@@ -153,10 +153,19 @@ def comment(request, productid):
 
 def renderProduct(request, productid):
     product = Listing.objects.get(id=productid)
+    user = request.user
+
     try:
         comments = Comment.objects.filter(product=product)
     except:
         comments = None
+    
+    if user in product.watchlist.all():
+        useronwatchlist = True
+    else:
+        useronwatchlist = False
+
+    
     return render(request, "auctions/product.html",{
         "id": product.id,
         "product": product.product,
@@ -168,7 +177,8 @@ def renderProduct(request, productid):
         "newOwner": product.newOwner,
         "category": product.category,
         "comments": comments,
-        "watchlist": product.watchlist
+        "watchlist": product.watchlist,
+        "useronwatchlist": useronwatchlist
         })
 
 def category(request, category):
@@ -189,11 +199,13 @@ def category_overview(request):
 def add_watchlist(request, productid):
     product = Listing.objects.get(id=productid)
     user = request.user
-    
-    if user in product.watchlist.all():
-        product.watchlist.remove(user)
-    else:
-        product.watchlist.add(user)
+    product.watchlist.add(user)
+    return renderProduct(request, productid=productid)
+
+def delete_watchlist(request, productid):
+    product = Listing.objects.get(id=productid)
+    user = request.user
+    product.watchlist.remove(user)
     return renderProduct(request, productid=productid)
 
 
