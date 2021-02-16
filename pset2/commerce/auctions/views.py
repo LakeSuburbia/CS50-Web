@@ -186,8 +186,11 @@ def category_overview(request):
         "categories": categories
     })
 
-def add_watchlist(request):
-    product = request.productid
+def add_watchlist(request, productid):
+    product = Listing.objects.get(id=productid)
+    user = request.user
+    product.watchlist.add(user)
+    return HttpResponseRedirect("Added!")
 
 
 def watchlist(request):
@@ -195,5 +198,5 @@ def watchlist(request):
         highestBid(product)
     return render(request, "auctions/index.html",
     {
-        "listings": Listing.objects.filter(active=True)
+        "listings": Listing.objects.filter(active=True, watchlist=request.user)
     })
