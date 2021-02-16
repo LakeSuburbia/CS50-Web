@@ -7,6 +7,12 @@
     {% if message %}
         <div>{{ message }}</div>
     {% endif %}
+    
+    {% if not listings %}
+
+    <h3> There's nothing on your watchlist!</h3>
+
+    {% else %}
     <div class="container">
         <div class="row">
     {% for item in listings %}
@@ -31,5 +37,6 @@
             {% endif %}
     {% endif %}
     {% endfor %}
+    {% endif %}
 </div>
 {% endblock %}

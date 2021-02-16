@@ -94,9 +94,10 @@ def sell(request):
             description = request.POST["description"]
             price = request.POST["price"]
             image = request.POST["image"]
+            category = request.POST["category"]
     
             try:
-                listing = Listing(seller = seller, product = product, description = description, price = price, image = image)
+                listing = Listing(seller = seller, product = product, description = description, price = price, image = image, category = category, active = True, newOwner = seller)
                 listing.save()
             except IntegrityError:
                 return render(request, "auctions/sell.html", {
@@ -212,7 +213,7 @@ def delete_watchlist(request, productid):
 def watchlist(request):
     for product in Listing.objects.all():
         highestBid(product)
-    return render(request, "auctions/index.html",
+    return render(request, "auctions/watchlist.html",
     {
         "listings": Listing.objects.filter(active=True, watchlist=request.user)
     })
