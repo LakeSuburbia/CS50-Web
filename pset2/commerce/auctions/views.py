@@ -189,8 +189,12 @@ def category_overview(request):
 def add_watchlist(request, productid):
     product = Listing.objects.get(id=productid)
     user = request.user
-    product.watchlist.add(user)
-    return HttpResponseRedirect("Added!")
+    
+    if user in product.watchlist.all():
+        product.watchlist.remove(user)
+    else:
+        product.watchlist.add(user)
+    return renderProduct(request, productid=productid)
 
 
 def watchlist(request):
