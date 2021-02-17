@@ -186,7 +186,7 @@ def renderProduct(request, productid):
 
 def category(request, category):
     listings = Listing.objects.filter(category=category)
-
+    listings = listings.filter(active=True)
     return render(request, "auctions/category.html",{
         "category": category,
         "listings": listings
