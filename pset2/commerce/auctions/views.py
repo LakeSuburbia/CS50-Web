@@ -194,8 +194,9 @@ def category(request, category):
 
 
 def category_overview(request):
-    categories = Listing.objects.order_by().values('category').distinct()
-    return render(request, "auction/category_overview.html",{
+    listings = Listing.objects.filter(active=True)
+    categories = listings.order_by().values('category').distinct()
+    return render(request, "auctions/category_overview.html",{
         "categories": categories
     })
 
