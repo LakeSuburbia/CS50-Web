@@ -12,7 +12,13 @@
         <p>Seller: {{seller}}
             <br>
         Current price: {{price}}
-            <br>
+        <br>
+        {% if seller == newOwner %}
+            Nobody has placed a bid yet.
+        {% else %}
+            Highest bidder: {{ newOwner }}
+        {% endif %}
+        <br>
         category: <a href=" {% url 'category' category %} ">{{category}}</a>
     </p>
     </span>
