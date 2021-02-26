@@ -31,3 +31,65 @@ function load_mailbox(mailbox) {
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 }
+
+function get_mailbox(mailbox){
+  fetch(`/emails/${mailbox}`)
+  .then(response => response.json())
+  .then(emails => {
+      // Print emails
+      console.log(emails);
+  
+      // ... do something else with emails ...
+      for (email in emails){
+        var mail = document.createElement("div");
+        var sender = document.createElement('h5');
+        var sub = document.createElement('p');
+        var time = document.createElement('p');
+        var id = document.createElement('p');
+
+        id.innerHTML = emails[email]['id'];
+        id.style.display = 'none';
+        if (emails[email]['read'] == true) {
+          mail.style.backgroundColor = 'lightgray';
+        }
+        else {
+          mail.style.backgroundColor = 'white';
+        }
+        mail.classList.add('container');
+        mail.classList.add('mail');
+
+        mail.addEventListener('click', () => load_email());
+        sub.addEventListener('click', () => load_email());
+        time.addEventListener('click', () => load_email());
+        sender.addEventListener('click', () => load_email());
+      }
+  });
+}
+
+
+function send_email(){
+  fetch("/emails", {
+    method: "POST",
+    body: JSON.stringify({
+      recipients: document.querySelector('#compose-recipients').value,
+      subject: document.querySelector('#compose-subject').value,
+      body: document.querySelector('#compose-body').value,
+    }),
+  })
+  .then((response) => response.json())
+  .then((result) => {
+    // Load the sent mailbox
+    load_mailbox("sent", result);
+  })
+  .catch((error) => console.log(error));
+}
+
+
+function archive_email(email_id){
+  fetch('/emails/', {
+    method: 'PUT',
+    body: JSON.stringify({
+        archived: true
+    })
+  })
+}
