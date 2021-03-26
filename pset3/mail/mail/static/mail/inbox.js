@@ -51,6 +51,7 @@ function send_email(event){
     // Print result
     console.log(result);
   })
+  .then(load_mailbox("sent"))
   .catch((error) => console.log(error));
 }
 
