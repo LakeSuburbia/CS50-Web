@@ -31,6 +31,47 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+
+
+  fetch(`/emails/${mailbox}`)
+    .then(response => response.json())
+    .then(emails => {
+
+      for (let email of emails) {
+        if (email.archived && mailbox == 'inbox') {
+          // pass
+        }
+        else {
+          const emailDiv = document.createElement('div');
+          emailDiv.setAttribute("class", "border border-secondary mt-2");
+          email.read ? emailDiv.style.backgroundColor = 'lightgrey' : emailDiv.style.backgroundColor = 'white';
+          emailDiv.innerHTML += "From: " + email.sender + "<br />";
+          emailDiv.innerHTML += "Subject: " + email.subject + "<br />";
+          emailDiv.innerHTML += email.timestamp + "<br />";
+          document.querySelector('#emails-view').appendChild(emailDiv);
+          emailDiv.addEventListener('click', () => load_email(email));
+
+          if (mailbox != 'sent') { // display archive/ unarchive button
+            const archiveButton = document.createElement('button');
+            archiveButton.setAttribute("class", "btn btn-danger");
+            archiveButton.textContent = email.archived ? "Unarchive" : "Archive";
+            document.querySelector('#emails-view').appendChild(archiveButton);
+            archiveButton.addEventListener('click', () => {
+              fetch('/emails/'+`${email.id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    archived: !(email.archived)
+                })
+              }).then(() => load_mailbox(mailbox));
+            });
+          }
+
+        }
+
+      }
+    });
+  
 }
 
 
@@ -71,38 +112,5 @@ function archive_email(email_id){
 
 
 
-/*
-function get_mailbox(mailbox){
-  fetch(`/emails/${mailbox}`)
-  .then(response => response.json())
-  .then(emails => {
-      // Print emails
-      console.log(emails);
-  
-      // ... do something else with emails ...
-      for (email in emails){
-        var mail = document.createElement("div");
-        var sender = document.createElement('h5');
-        var sub = document.createElement('p');
-        var time = document.createElement('p');
-        var id = document.createElement('p');
 
-        id.innerHTML = emails[email]['id'];
-        id.style.display = 'none';
-        if (emails[email]['read'] == true) {
-          mail.style.backgroundColor = 'lightgray';
-        }
-        else {
-          mail.style.backgroundColor = 'white';
-        }
-        mail.classList.add('container');
-        mail.classList.add('mail');
 
-        mail.addEventListener('click', () => load_email());
-        sub.addEventListener('click', () => load_email());
-        time.addEventListener('click', () => load_email());
-        sender.addEventListener('click', () => load_email());
-      }
-  });
-}
-*/
