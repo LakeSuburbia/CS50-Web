@@ -36,6 +36,10 @@ function load_mailbox(mailbox) {
 
   fetch(`/emails/${mailbox}`)
     .then(response => response.json())
+    .then(result => {
+      // Only for debugging purposes
+      console.log(result);
+    })
     .then(emails => {
 
       for (let email of emails) {
@@ -102,6 +106,7 @@ function load_mailbox(mailbox) {
 function send_email(event){
   event.preventDefault();
 
+  // Call API with mail-content in jason format
   fetch('/emails', {
     method: 'POST',
     body: JSON.stringify({
@@ -112,7 +117,7 @@ function send_email(event){
   })
   .then(response => response.json())
   .then(result => {
-    // Print result
+    // Only for debugging purposes
     console.log(result);
   })
   .then(load_mailbox("sent"))
