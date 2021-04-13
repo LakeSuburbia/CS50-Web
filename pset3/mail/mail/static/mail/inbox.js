@@ -35,6 +35,7 @@ function load_mailbox(mailbox) {
 
 
   fetch(`/emails/${mailbox}`)
+    .then(window.location.reload())
     .then(response => response.json())
     .then(emails => {
 
@@ -95,22 +96,3 @@ function send_email(event){
   .then(load_mailbox("sent"))
   .catch((error) => console.log(error));
 }
-
-
-
-
-/*
-function archive_email(email_id){
-  fetch('/emails/', {
-    method: 'PUT',
-    body: JSON.stringify({
-        archived: true
-    })
-  })
-}
-*/
-
-
-
-
-
