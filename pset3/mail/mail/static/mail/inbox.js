@@ -35,30 +35,34 @@ function load_mailbox(mailbox) {
 
 
   fetch(`/emails/${mailbox}`)
-    .then(window.location.reload())
     .then(response => response.json())
     .then(emails => {
 
       for (let email of emails) {
-        if (email.archived && mailbox == 'inbox') {
-          // pass
-        }
-        else {
-          const emailDiv = document.createElement('div');
-          emailDiv.setAttribute("class", "border border-secondary mt-2");
-          email.read ? emailDiv.style.backgroundColor = 'lightgrey' : emailDiv.style.backgroundColor = 'white';
-          emailDiv.innerHTML += "From: " + email.sender + "<br />";
-          emailDiv.innerHTML += "Subject: " + email.subject + "<br />";
-          emailDiv.innerHTML += email.timestamp + "<br />";
-          document.querySelector('#emails-view').appendChild(emailDiv);
-          emailDiv.addEventListener('click', () => load_email(email));
+        if (email.archived == false || mailbox != 'inbox') {
+          
+          const row = document.createElement('div')
+          row.setAttribute("class", "row");
+          const mailboxDiv = document.createElement('div')
+          mailboxDiv.innerHTML += "From: " + email.sender + "<br />"
+          + "Subject: " + email.subject + "<br />" 
+          + email.timestamp + "<br />";
 
-          if (mailbox != 'sent') { // display archive/ unarchive button
-            const archiveButton = document.createElement('button');
-            archiveButton.setAttribute("class", "btn btn-danger");
-            archiveButton.textContent = email.archived ? "Unarchive" : "Archive";
-            document.querySelector('#emails-view').appendChild(archiveButton);
-            archiveButton.addEventListener('click', () => {
+          if (email.read)
+          {mailboxDiv.setAttribute("class", "col-sm mailbox border read border-light");}
+          else
+          {mailboxDiv.setAttribute("class", "col-sm mailbox border unread border-primary");}
+
+
+          row.appendChild(mailboxDiv);
+          mailboxDiv.addEventListener('click', () => load_email(email));
+
+          if (mailbox == 'inbox' || mailbox == 'archive') {
+            const archive = document.createElement('button');
+            archive.setAttribute("class", " rounded-right col-sm button btn btn-danger");
+            archive.textContent = email.archived ? "Unarchive" : "Archive";
+            row.appendChild(archive);
+            archive.addEventListener('click', () => {
               fetch('/emails/'+`${email.id}`, {
                 method: 'PUT',
                 body: JSON.stringify({
@@ -67,6 +71,8 @@ function load_mailbox(mailbox) {
               }).then(() => load_mailbox(mailbox));
             });
           }
+
+          document.querySelector('#emails-view').appendChild(row);
 
         }
 

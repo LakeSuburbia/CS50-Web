@@ -1,3 +1,41 @@
 textarea {
     min-height: 400px;
 }
+
+.mailbox {
+    min-height: 100px;
+    text-align: left;
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+.read {
+    background-color: lightgray;
+}
+.unread{
+    background-color: whitesmoke;
+}
+
+.button{
+    min-height: 100px;
+    min-width: 100px;
+    max-height: 50px;
+    max-width: 100px;
+    background-color: lightgray;
+    border: none;
+    border-radius: 0px
+}
+
+.row{
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+}
+
+h3{
+    text-align: center;
+}
+
+.header{
+    text-align:center;
+}
