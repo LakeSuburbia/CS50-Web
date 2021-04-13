@@ -41,27 +41,42 @@ function load_mailbox(mailbox) {
       for (let email of emails) {
         if (email.archived == false || mailbox != 'inbox') {
           
+          // create a row to wrap the mail (+ archive button)
           const row = document.createElement('div')
           row.setAttribute("class", "row");
-          const mailboxDiv = document.createElement('div')
-          mailboxDiv.innerHTML += "From: " + email.sender + "<br />"
-          + "Subject: " + email.subject + "<br />" 
-          + email.timestamp + "<br />";
 
+          // create a div for the mail preview itself
+          const mailboxDiv = document.createElement('div')
+
+          // styling for the mail preview
           if (email.read)
           {mailboxDiv.setAttribute("class", "col-sm mailbox border read border-light");}
           else
           {mailboxDiv.setAttribute("class", "col-sm mailbox border unread border-primary");}
 
-
-          row.appendChild(mailboxDiv);
+          // Load the mail when you click the div
           mailboxDiv.addEventListener('click', () => load_email(email));
 
+          // add the mailbox to the row
+          row.appendChild(mailboxDiv);
+
+          // We only need an archive button when we're in inbox or archive
           if (mailbox == 'inbox' || mailbox == 'archive') {
+            // Create archive div
             const archive = document.createElement('button');
-            archive.setAttribute("class", " rounded-right col-sm button btn btn-danger");
-            archive.textContent = email.archived ? "Unarchive" : "Archive";
+            // style archive div
+            archive.setAttribute("class", "rounded-right col-sm button btn btn-danger");
+
+            // decide wether you should archive or unarchive
+            if (email.archived)
+            {archive.textContent = "Unarchive"}
+            else
+            {archive.textContent = "Archive"}
+
+            // add archive to the row
             row.appendChild(archive);
+
+            // Create the archive / unarchive function
             archive.addEventListener('click', () => {
               fetch('/emails/'+`${email.id}`, {
                 method: 'PUT',
@@ -72,6 +87,7 @@ function load_mailbox(mailbox) {
             });
           }
 
+          // Bring the row to the DOM
           document.querySelector('#emails-view').appendChild(row);
 
         }
