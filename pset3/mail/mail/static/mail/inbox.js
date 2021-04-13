@@ -32,33 +32,28 @@ function load_mailbox(mailbox) {
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
-
-
   fetch(`/emails/${mailbox}`)
     .then(window.location.reload())
     .then(response => response.json())
     .then(emails => {
 
-      for (let email of emails) {
-        if (email.archived && mailbox == 'inbox') {
-          // pass
-        }
-        else {
-          const emailDiv = document.createElement('div');
-          emailDiv.setAttribute("class", "border border-secondary mt-2");
-          email.read ? emailDiv.style.backgroundColor = 'lightgrey' : emailDiv.style.backgroundColor = 'white';
-          emailDiv.innerHTML += "From: " + email.sender + "<br />";
-          emailDiv.innerHTML += "Subject: " + email.subject + "<br />";
-          emailDiv.innerHTML += email.timestamp + "<br />";
+      for (email in emails) {
+        if (email.archived == false || mailbox != 'inbox') {
+          const div = document.createElement('div').innerHTML 
+          += "From: " + email.sender + "<br />"
+          + "Subject: " + email.subject + "<br />"
+          + email.timestamp + "<br />";
+
           document.querySelector('#emails-view').appendChild(emailDiv);
           emailDiv.addEventListener('click', () => load_email(email));
 
-          if (mailbox != 'sent') { // display archive/ unarchive button
-            const archiveButton = document.createElement('button');
-            archiveButton.setAttribute("class", "btn btn-danger");
-            archiveButton.textContent = email.archived ? "Unarchive" : "Archive";
-            document.querySelector('#emails-view').appendChild(archiveButton);
-            archiveButton.addEventListener('click', () => {
+          if (mailbox == 'inbox' || mailbox == 'archive') {
+            
+            const button = document.createElement('button');
+            button.textContent = email.archived ? "Unarchive" : "Archive";
+
+            document.querySelector('#emails-view').appendChild(button);
+            button.addEventListener('click', () => {
               fetch('/emails/'+`${email.id}`, {
                 method: 'PUT',
                 body: JSON.stringify({
