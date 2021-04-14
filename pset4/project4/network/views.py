@@ -3,8 +3,9 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+import datetime
 
-from .models import User, Follows
+from .models import *
 
 
 def index(request):
@@ -72,3 +73,21 @@ def follow(request, userid):
             Follows.objects.get(follower=follower, followee=followee).delete()
         else:
             Follows.objects.create(follower=follower, followee=followee)
+
+def like(request, postid):
+    if request.method == "POST":
+        liker = request.user
+        liked = User.objects.get(postid)
+
+        if Likes.objects.filter(liker=liker, liked=liked).exists():
+            Likes.objects.get(liker=liker, liked=liked).delete()
+        else:
+            Follows.objects.create(liker=liker, liked=liked)
+
+def make_post(request):
+    if request.method == "POST":
+        if request.user.is_authenticated():
+            poster = request.user
+            body = request.POST["body"]
+            time = datetime.date.now()
+            Post.objects.create(poster = poster, body = body, time = time)

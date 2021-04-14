@@ -12,7 +12,8 @@ class Follows(models.Model):
 class Post(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     body = models.TextField(max_length=140)
+    time = models.DateTimeField()
 
 class Likes(models.Model):
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
-    post = models.ForeignKey('Post', on_delete=models.CASCADE)
+    liker = models.ForeignKey('User', on_delete=models.CASCADE)
+    liked = models.ForeignKey('Post', on_delete=models.CASCADE)
