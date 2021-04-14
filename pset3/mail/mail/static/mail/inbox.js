@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
+  //document.querySelector('#replyButton').addEventListener('submit', (mail) => compose_email);
   document.querySelector('#compose').addEventListener('click', compose_email);
   document.querySelector("#compose-form").addEventListener("submit", send_email);
 
@@ -71,7 +72,7 @@ function load_mailbox(mailbox) {
                 // Create archive div
                 const archive = document.createElement('button');
                 // style archive div
-                archive.setAttribute("class", "rounded-right col-sm button btn btn-danger");
+                archive.setAttribute("class", "rounded-right col-sm archiveButton btn btn-danger");
 
                 // decide wether you should archive or unarchive
                 if (email.archived)
@@ -104,22 +105,27 @@ function load_mailbox(mailbox) {
   }
   else{
     email = mailbox;
-      fetch(`/emails/${email.id}`)
-      .then(response => response.json())
-      .then(email => {
-          // Only for debugging purposes 
-      console.log(email);
-      const mailDiv = document.createElement('div')
-      
-      document.querySelector('#emails-view').innerHTML = 
+
+    // Mark the mail as read
+    fetch(`/emails/${email.id}`,{
+      method: 'PUT',
+      body: JSON.stringify({
+          read: true
+      })
+    })
+
+    // Push the mail to the DOM
+    document.querySelector('#emails-view').innerHTML = 
       `<div class="col-sm mail border unread border-light"> 
       From: ${email.sender} <br/>
       Subject: ${email.subject} <br/>
       ${email.timestamp} <br/>
       ${email.body}
+      </div>
+      <div id="replyButton" class="rounded-bottom row replyButton btn btn-danger">
+      REPLY
       </div>`
-      
-      });
+    
   }
 }
 
