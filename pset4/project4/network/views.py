@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.core import serializers
 from django.shortcuts import render
 from django.urls import reverse
 import datetime
@@ -66,23 +67,33 @@ def register(request):
 
 def follow(request, userid):
     if request.method == "POST":
-        follower = request.user
-        followee = User.objects.get(userid)
+        if request.user.is_authenticated:
+            follower = request.user
+            followee = User.objects.get(userid)
 
-        if Follows.objects.filter(follower=follower, followee=followee).exists():
-            Follows.objects.get(follower=follower, followee=followee).delete()
-        else:
-            Follows.objects.create(follower=follower, followee=followee)
+            if Follows.objects.filter(follower=follower, followee=followee).exists():
+                Follows.objects.get(follower=follower, followee=followee).delete()
+            else:
+                Follows.objects.create(follower=follower, followee=followee)
+        return JsonResponse({"message": "User is not authorized"}, status=301)
+    return JsonResponse({"message": "Wrong request"}, status=500)
+
 
 def like(request, postid):
     if request.method == "POST":
-        liker = request.user
-        liked = Post.objects.get(postid)
+        if request.user.is_authenticated:
+            liker = request.user
+            liked = Post.objects.get(postid)
 
-        if Likes.objects.filter(liker=liker, liked=liked).exists():
-            Likes.objects.get(liker=liker, liked=liked).delete()
-        else:
-            Follows.objects.create(liker=liker, liked=liked)
+            if Likes.objects.filter(liker=liker, liked=liked).exists():
+                Likes.objects.get(liker=liker, liked=liked).delete()
+                return JsonResponse({"message": "Post is succesfully unliked"}, status=201)
+            else:
+                Follows.objects.create(liker=liker, liked=liked)
+                return JsonResponse({"message": "Post is succesfully liked"}, status=201)
+        return JsonResponse({"message": "User is not authorized"}, status=301)
+    return JsonResponse({"message": "Wrong request"}, status=500)
+
 
 def make_post(request):
     if request.method == "POST":
@@ -91,6 +102,11 @@ def make_post(request):
             body = request.POST["body"]
             time = datetime.date.now()
             Post.objects.create(poster = poster, body = body, time = time)
+            
+            return JsonResponse({"message": "Post is succesfully posted"}, status=201)
+        return JsonResponse({"message": "User is not authorized"}, status=301)
+    return JsonResponse({"message": "Wrong request"}, status=500)
+
 
 def edit_post(request, postid):
     if request.method == "POST":
@@ -100,3 +116,32 @@ def edit_post(request, postid):
             if post.poster == poster:
                 post.body = request.POST["body"]
                 post.save()
+            return JsonResponse({"message": "Post is succesfully edited"}, status=201)
+        return JsonResponse({"message": "User is not authorized"}, status=301)
+    return JsonResponse({"message": "Wrong request"}, status=500)
+
+
+def get_followcount(request, userid):
+    if request.method == "GET":
+        if request.user.is_authenticated:
+            if User.objects.filter(id=userid).exists:
+                followingcount = Follows.objects.filter(follower=userid).count()
+                followercount = Follows.objects.filter(followee=userid).count()
+                return JsonResponse([{
+                    "followers": followercount,
+                    "following": followingcount
+                }])
+            return JsonResponse({"message": "User does not exist"}, status=301)
+        return JsonResponse({"message": "User is not authorized"}, status=301)
+    return JsonResponse({"message": "Wrong request"}, status=500)
+
+def get_currentuser(request):
+    if request.method == "GET":
+        if request.user:
+            data = {"username":request.user.username
+            }
+            #data = serializers.serialize("json", user, fields=('username'))
+            
+            return JsonResponse(data)
+        return JsonResponse({"message": "User is not authorized"}, status=301)
+    return JsonResponse({"message": "Wrong request"}, status=500)
