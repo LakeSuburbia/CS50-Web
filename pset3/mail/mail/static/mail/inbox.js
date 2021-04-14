@@ -110,10 +110,15 @@ function load_mailbox(mailbox) {
           // Only for debugging purposes 
       console.log(email);
       const mailDiv = document.createElement('div')
-      mailDiv.innerHTML += "From: " + email.sender + "<br />"
-      + "Subject: " + email.subject + "<br />" 
-      + email.timestamp + "<br />" + email.body;
-      document.querySelector('#emails-view').appendChild(mailDiv);
+      
+      document.querySelector('#emails-view').innerHTML = 
+      `<div class="col-sm mail border unread border-light"> 
+      From: ${email.sender} <br/>
+      Subject: ${email.subject} <br/>
+      ${email.timestamp} <br/>
+      ${email.body}
+      </div>`
+      
       });
   }
 }

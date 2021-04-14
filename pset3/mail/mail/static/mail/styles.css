@@ -19,7 +19,7 @@ textarea {
 .button{
     min-height: 100px;
     min-width: 100px;
-    max-height: 50px;
+    max-height: 100px;
     max-width: 100px;
     background-color: lightgray;
     border: none;
@@ -38,4 +38,8 @@ h3{
 
 .header{
     text-align:center;
+}
+
+.mail{
+    min-height: 400px;
 }
