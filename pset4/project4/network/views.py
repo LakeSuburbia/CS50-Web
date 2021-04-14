@@ -77,7 +77,7 @@ def follow(request, userid):
 def like(request, postid):
     if request.method == "POST":
         liker = request.user
-        liked = User.objects.get(postid)
+        liked = Post.objects.get(postid)
 
         if Likes.objects.filter(liker=liker, liked=liked).exists():
             Likes.objects.get(liker=liker, liked=liked).delete()
@@ -91,3 +91,12 @@ def make_post(request):
             body = request.POST["body"]
             time = datetime.date.now()
             Post.objects.create(poster = poster, body = body, time = time)
+
+def edit_post(request, postid):
+    if request.method == "POST":
+        if request.user.is_authenticated():
+            poster = request.user
+            post = Post.objects.get(postid)
+            if post.poster == poster:
+                post.body = request.POST["body"]
+                post.save()
