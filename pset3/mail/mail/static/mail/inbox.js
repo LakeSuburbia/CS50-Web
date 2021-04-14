@@ -12,16 +12,23 @@ document.addEventListener('DOMContentLoaded', function() {
   load_mailbox('inbox');
 });
 
-function compose_email() {
+function compose_email(mail) {
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
-  // Clear out composition fields
+  if (mail)
+  {
+    document.querySelector('#compose-recipients').value = mail.sender;
+    document.querySelector('#compose-subject').value = mail.subject;
+    document.querySelector('#compose-body').value = mail.body;
+  }
+  else{
+    // Clear out composition fields
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
-
+  }
   
 }
 
@@ -106,6 +113,8 @@ function load_mailbox(mailbox) {
   else{
     email = mailbox;
 
+    document.querySelector('#emails-view').innerHTML = `<h3>${email.subject}</h3>`;
+
     // Mark the mail as read
     fetch(`/emails/${email.id}`,{
       method: 'PUT',
@@ -115,16 +124,29 @@ function load_mailbox(mailbox) {
     })
 
     // Push the mail to the DOM
-    document.querySelector('#emails-view').innerHTML = 
-      `<div class="col-sm mail border unread border-light"> 
-      From: ${email.sender} <br/>
-      Subject: ${email.subject} <br/>
-      ${email.timestamp} <br/>
-      ${email.body}
-      </div>
-      <div id="replyButton" class="rounded-bottom row replyButton btn btn-danger">
-      REPLY
-      </div>`
+    const mailContainer = document.createElement('div')
+    const mailDiv = document.createElement('div')
+    const replyDiv = document.createElement('div')
+
+    mailDiv.setAttribute("class", "row mail border unread border-light");
+    replyDiv.setAttribute("class", "rounded-bottom row replyButton btn btn-danger");
+
+    mailDiv.innerHTML = 
+    `From: ${email.sender} <br/>
+    Subject: ${email.subject} <br/>
+    ${email.timestamp} <br/>
+    ${email.body}`
+
+
+    replyDiv.innerHTML = "REPLY"
+    replyDiv.addEventListener('click', () => compose_email(email));
+
+
+    mailContainer.appendChild(mailDiv)
+    mailContainer.appendChild(replyDiv)
+
+    document.querySelector('#emails-view').appendChild(mailContainer);
+    
     
   }
 }
