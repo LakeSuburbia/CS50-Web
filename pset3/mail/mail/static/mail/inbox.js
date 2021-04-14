@@ -17,11 +17,11 @@ function compose_email(mail) {
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
-  if (mail)
+  if (mail.sender != undefined)
   {
     document.querySelector('#compose-recipients').value = mail.sender;
     document.querySelector('#compose-subject').value = mail.subject;
-    document.querySelector('#compose-body').value = mail.body;
+    document.querySelector('#compose-body').value = "\n\non " + mail.timestamp + " " + mail.sender + " wrote: \n\n" + mail.body;
   }
   else{
     // Clear out composition fields

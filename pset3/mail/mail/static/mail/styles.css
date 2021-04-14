@@ -1,5 +1,6 @@
 textarea {
     min-height: 400px;
+    white-space: pre-wrap;
 }
 
 .mailbox {
