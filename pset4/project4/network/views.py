@@ -125,8 +125,10 @@ def get_followcount(request, userid):
     if request.method == "GET":
         if request.user.is_authenticated:
             if User.objects.filter(id=userid).exists:
-                followingcount = Follows.objects.filter(follower=userid).count()
-                followercount = Follows.objects.filter(followee=userid).count()
+                followingcount = 0
+                followercount = 0
+                followingcount += Follows.objects.filter(follower=userid).count()
+                followercount += Follows.objects.filter(followee=userid).count()
                 return JsonResponse([{
                     "followers": followercount,
                     "following": followingcount

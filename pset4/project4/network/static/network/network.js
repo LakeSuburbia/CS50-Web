@@ -14,7 +14,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show compose view and hide other views
     document.querySelector('#profile-view').style.display = 'block';
     document.querySelector('#posts-view').style.display = 'block';
-
+    fetch(`/get_followcount/${user.id}`)
+        .then(response => json(response))
+        .then(followers => {
+            document.querySelector('followers').appendChild(followers)
+        })
+        .then(following => {
+            document.querySelector('following').appendChild(following)
+        })
+    
     if (user == 'myProfile')
     {
         document.querySelector('#new-post').style.display = 'block';
