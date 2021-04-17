@@ -132,7 +132,7 @@ def get_followcount(request, userid):
                 return JsonResponse([{
                     "followers": followercount,
                     "following": followingcount
-                }])
+                }], safe=False)
             return JsonResponse({"message": "User does not exist"}, status=301)
         return JsonResponse({"message": "User is not authorized"}, status=301)
     return JsonResponse({"message": "Wrong request"}, status=500)
@@ -140,7 +140,9 @@ def get_followcount(request, userid):
 def get_currentuser(request):
     if request.method == "GET":
         if request.user:
-            data = {"username":request.user.username
+            data = {
+                "username":request.user.username, 
+                "userid":request.user.id
             }
             #data = serializers.serialize("json", user, fields=('username'))
             

@@ -14,7 +14,40 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show compose view and hide other views
     document.querySelector('#profile-view').style.display = 'block';
     document.querySelector('#posts-view').style.display = 'block';
-    fetch(`/get_followcount/${user.id}`)
+    
+    
+    if (user == 'myProfile')
+    {
+        document.querySelector('#new-post').style.display = 'block';
+        fetch(`/get_currentuser`)
+        .then (response => response.json())
+        .then(data => {
+            console.log(data.userid)
+            console.log(data.username)
+            header = document.createElement('h2')
+            header.textContent = data.username;
+            document.querySelector('#username').appendChild(header)
+            fetch(`/get_followcount/${data.userid}`)
+            .then(response => response.json())
+            .then(data => {
+                
+                console.log(data[0].followers)
+                console.log(data[0].following)
+
+                followers = document.createElement('b')
+                followers.textContent = data[0].followers
+
+                following = document.createElement('b')
+                following.textContent = data[0].following
+                
+                document.querySelector('#followcount').appendChild(following)
+                document.querySelector('#followercount').appendChild(followers)
+            })
+        })
+    }
+    else{
+        document.querySelector('#new-post').style.display = 'none';
+        fetch(`/get_followcount/${user}`)
         .then(response => json(response))
         .then(followers => {
             document.querySelector('followers').appendChild(followers)
@@ -22,21 +55,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(following => {
             document.querySelector('following').appendChild(following)
         })
+    }
     
-    if (user == 'myProfile')
-    {
-        document.querySelector('#new-post').style.display = 'block';
-        fetch(`/get_currentuser`)
-        .then(response => json(response))
-        .then(username => {
-            header = document.createElement('h2')
-            header.textContent = "test";
-            document.querySelector('#username').appendChild(bold)
-        })
-    }
-    else{
-        document.querySelector('#new-post').style.display = 'none';
-    }
   }
 
   function load_posts(posts) {
