@@ -61,6 +61,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function load_posts(posts) {
     // Show compose view and hide other views
+    document.querySelector('#profile-view').style.display = 'none';
+    document.querySelector('#posts-view').style.display = 'block';
+    
     if (posts == 'allposts')
     {
         document.querySelector('#new-post').style.display = 'block';
@@ -68,6 +71,4 @@ document.addEventListener('DOMContentLoaded', function() {
     else{
         document.querySelector('#new-post').style.display = 'none';
     }
-    document.querySelector('#profile-view').style.display = 'none';
-    document.querySelector('#posts-view').style.display = 'block';
   }

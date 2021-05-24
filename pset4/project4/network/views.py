@@ -67,8 +67,8 @@ def register(request):
 
 def follow(request, userid):
     if request.method == "POST":
-        if request.user.is_authenticated:
-            follower = request.user
+        follower = request.user
+        if follower is not None:
             followee = User.objects.get(userid)
 
             if Follows.objects.filter(follower=follower, followee=followee).exists():
@@ -81,8 +81,8 @@ def follow(request, userid):
 
 def like(request, postid):
     if request.method == "POST":
-        if request.user.is_authenticated:
-            liker = request.user
+        liker = request.user
+        if liker is not None:
             liked = Post.objects.get(postid)
 
             if Likes.objects.filter(liker=liker, liked=liked).exists():
@@ -97,10 +97,10 @@ def like(request, postid):
 
 def make_post(request):
     if request.method == "POST":
-        if request.user.is_authenticated():
-            poster = request.user
+        poster = request.user
+        if poster is not None:
             body = request.POST["body"]
-            time = datetime.date.now()
+            time = datetime.now()
             Post.objects.create(poster = poster, body = body, time = time)
             
             return JsonResponse({"message": "Post is succesfully posted"}, status=201)
@@ -110,8 +110,8 @@ def make_post(request):
 
 def edit_post(request, postid):
     if request.method == "POST":
-        if request.user.is_authenticated():
-            poster = request.user
+        poster = request.user
+        if poster is not None:
             post = Post.objects.get(postid)
             if post.poster == poster:
                 post.body = request.POST["body"]
@@ -123,7 +123,8 @@ def edit_post(request, postid):
 
 def get_followcount(request, userid):
     if request.method == "GET":
-        if request.user.is_authenticated:
+        user = request.user
+        if user is not None:
             if User.objects.filter(id=userid).exists:
                 followingcount = 0
                 followercount = 0

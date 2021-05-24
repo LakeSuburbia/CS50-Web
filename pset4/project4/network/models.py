@@ -15,7 +15,7 @@ class Follows(models.Model):
     followee = models.ForeignKey('User', on_delete=models.CASCADE, related_name="followee")
     
 class Post(models.Model):
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    poster = models.ForeignKey('User', on_delete=models.CASCADE)
     body = models.TextField(max_length=140)
     time = models.DateTimeField(default=default_start_time)
 

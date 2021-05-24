@@ -7,25 +7,30 @@
     <div id="profile-view">
         <div class="container">
             <div id="username" class="row">
-                
+            
             </div>
-            <div class="row">
+            {% if user.is_authenticated %}
+            <div id="follow-view" class="row">
                 <div id="followcount" class="col-sm">Following: </div>
                 <div id="followercount" class="col-sm">Followers: </div>
                 <div id="follow-button" class="col-sm button">Follow</div>
             </div>
+            {% endif %}
         </div>
     </div>
 
     <!-- New Post is visible when visiting your own profile or when you're on the All Posts pages -->
-    <div id="new-post">
-        <h4>New Post</h4>
-        <form>
-            <textarea maxlength="140"></textarea>
-            <br/>
-            <button type="submit">Post</button>
-        </form>
-    </div>
+    {% if user.is_authenticated %}
+        <div id="new-post">
+            <h4>New Post</h4>
+            <form action="{% url 'make_post' %}" method = "POST">
+                {% csrf_token %} 
+                <textarea maxlength="140" name = "body"></textarea>
+                <br/>
+                <button type="submit">Post</button>
+            </form>
+        </div>
+    {% endif %}
 
     
     <!-- Post view is where the summation of posts goes -->
