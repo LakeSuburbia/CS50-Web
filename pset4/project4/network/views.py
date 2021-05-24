@@ -4,7 +4,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.shortcuts import render
 from django.urls import reverse
-import datetime
+from django.utils import timezone
 
 from .models import *
 
@@ -100,10 +100,12 @@ def make_post(request):
         poster = request.user
         if poster is not None:
             body = request.POST["body"]
-            time = datetime.now()
+            time = timezone.now()
             Post.objects.create(poster = poster, body = body, time = time)
             
-            return JsonResponse({"message": "Post is succesfully posted"}, status=201)
+            return render(request, "network/index.html", {
+                "message": "Post is succesfully posted"
+            })
         return JsonResponse({"message": "User is not authorized"}, status=301)
     return JsonResponse({"message": "Wrong request"}, status=500)
 

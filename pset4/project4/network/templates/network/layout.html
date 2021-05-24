@@ -43,6 +43,11 @@
           </nav>
         
         <div class="body">
+            {% if message %}
+            </div id="message">
+             {{message}}
+             </div>
+            {% endif %}
             {% block body %}
             {% endblock %}
         </div>
