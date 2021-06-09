@@ -9,7 +9,10 @@ from .models import *
 
 def index(request):
     posts = Post.objects.all().order_by("-timestamp")
-    return render(request, "network/index.html", {'posts': posts})
+    return render(request, "network/index.html", {
+        'posts': posts,
+        'frontpage': True,
+        })
 
 
 def login_view(request):
@@ -76,6 +79,24 @@ def follow(request, userid):
     return userpage(request, userid)
 
 def like(request, postid):
+    if request.method == "POST":
+        liker = request.user
+        if liker is not None:
+            liked = Post.objects.get(postid)
+
+            if Likes.objects.filter(liker=liker, liked=liked).exists():
+                Likes.objects.get(liker=liker, liked=liked).delete()
+                liked.like -= 1
+                return JsonResponse({"message": "Post is succesfully unliked"}, status=201)
+            else:
+                Follows.objects.create(liker=liker, liked=liked)
+                liked.like += 1
+                return JsonResponse({"message": "Post is succesfully liked"}, status=201)
+        return JsonResponse({"message": "User is not authorized"}, status=301)
+    return JsonResponse({"message": "Wrong request"}, status=500)
+
+
+def edit(request, postid):
     if request.method == "POST":
         liker = request.user
         if liker is not None:
@@ -162,4 +183,7 @@ def following(request):
     followquery = Follows.objects.filter(follower=request.user.id)
     followlist = [followee.followee.id for followee in followquery]
     posts = Post.objects.filter(poster__in=followlist).order_by('-timestamp')
-    return render(request, "network/index.html", {'posts': posts})
+    return render(request, "network/index.html", {
+        'posts': posts,
+        'frontpage': False,
+    })

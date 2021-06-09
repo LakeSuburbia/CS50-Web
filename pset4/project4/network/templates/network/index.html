@@ -4,28 +4,14 @@
 
 
     <!-- New Post is visible when visiting your own profile or when you're on the All Posts pages -->
-    {% if user.is_authenticated %}
-        <div id="new-post">
-            <h4>New Post</h4>
-            <form action="{% url 'make_post' %}" method = "POST">
-                {% csrf_token %} 
-                <textarea maxlength="140" name = "body"  class="text-area"></textarea>
-                <br/>
-                <button type="submit">Post</button>
-            </form>
-        </div>
+    {% if user.is_authenticated and frontpage %}
+        {% include 'network/newpost.html' %}
+        <h2 id="message"> These are the posts of all the people.</h2>
+    {% else %}
+    <h2 id="message"> These are the posts of the people you follow.</h2>
     {% endif %}
 
     
-    <!-- Post view is where the summation of posts goes -->
-    <div id="posts-view">
-        {% for post in posts%}
-        <div class="col post">
-            <a href="{% url 'user' post.poster.id%}"><h3>{{post.poster.username}}</h3></a> <p>
-
-            </p> {{post.body}} </p>
-            <p class='timestamp'>{{post.timestamp}} | {{post.like}} LIKES</p>
-        </div>
-        {% endfor %}
-    </div>
+    <!-- This is where the summation of posts goes -->
+    {% include 'network/posts.html' %}
 {% endblock %}
