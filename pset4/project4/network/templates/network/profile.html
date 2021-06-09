@@ -13,7 +13,19 @@
             <div id="follow-view" class="row">
                 <div id="followcount" class="col-sm"><b>Followers: {{followers}}</b></div>
                 <div id="followercount" class="col-sm"><b>Following: {{following}}</b></div>
-                <div id="follow-button" class="col-sm button">Follow</div>
+                {% if userid != user.id %}
+                {% if follows == 1%}
+                <form class="col-sm" action="{% url 'follow' userid %}"  method="post">
+                    {% csrf_token %}
+                    <button id="follow-button" class="button" type="submit" >Unfollow</div>
+                </form>
+                {% else %}
+                <form class="col-sm" action="{% url 'follow' userid %}"  method="post">
+                    {% csrf_token %}
+                    <button id="follow-button" class="button" type="submit" >Follow</div>
+                </form>
+                {% endif %}
+                {% endif %}
             </div>
             {% endif %}
         </div>

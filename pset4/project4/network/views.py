@@ -1,12 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from django.core import serializers
 from django.shortcuts import render
 from django.urls import reverse
-from django.utils import timezone
-import json
-from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
 
@@ -71,16 +67,13 @@ def register(request):
 def follow(request, userid):
     if request.method == "POST":
         follower = request.user
-        if follower is not None:
-            followee = User.objects.get(userid)
+        followee = User.objects.get(id=userid)
 
-            if Follows.objects.filter(follower=follower, followee=followee).exists():
-                Follows.objects.get(follower=follower, followee=followee).delete()
-            else:
-                Follows.objects.create(follower=follower, followee=followee)
-        return JsonResponse({"message": "User is not authorized"}, status=301)
-    return JsonResponse({"message": "Wrong request"}, status=500)
-
+        if Follows.objects.filter(follower=follower, followee=followee).exists():
+            Follows.objects.get(follower=follower, followee=followee).delete()
+        else:
+            Follows.objects.create(follower=follower, followee=followee)
+    return userpage(request, userid)
 
 def like(request, postid):
     if request.method == "POST":
@@ -147,14 +140,22 @@ def userpage(request, userid):
     posts = Post.objects.filter(poster = userid)
     followingcount = 0
     followercount = 0
-    followingcount += Follows.objects.filter(follower=userid).count()
-    followercount += Follows.objects.filter(followee=userid).count()
+    following = Follows.objects.filter(follower=userid)
+    followingcount += following.count()
+
+    followers = Follows.objects.filter(followee=userid)
+    followercount += followers.count()
+
+    follows = 0
+    if followers.filter(follower = request.user).exists():
+        follows = 1
     return render(request, "network/profile.html", {
         'username': user.username,
         'userid': userid,
         'followers': followercount,
         'following': followingcount,
         'posts': posts,
+        'follows': follows
         })
 
 def my_profile(request):
