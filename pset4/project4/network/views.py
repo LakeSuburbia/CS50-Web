@@ -12,7 +12,8 @@ from .models import *
 
 
 def index(request):
-    return render(request, "network/index.html")
+    posts = Post.objects.all().order_by("-timestamp")
+    return render(request, "network/index.html", {'posts': posts})
 
 
 def login_view(request):
@@ -89,9 +90,11 @@ def like(request, postid):
 
             if Likes.objects.filter(liker=liker, liked=liked).exists():
                 Likes.objects.get(liker=liker, liked=liked).delete()
+                liked.like -= 1
                 return JsonResponse({"message": "Post is succesfully unliked"}, status=201)
             else:
                 Follows.objects.create(liker=liker, liked=liked)
+                liked.like += 1
                 return JsonResponse({"message": "Post is succesfully liked"}, status=201)
         return JsonResponse({"message": "User is not authorized"}, status=301)
     return JsonResponse({"message": "Wrong request"}, status=500)
@@ -104,9 +107,7 @@ def make_post(request):
             body = request.POST["body"]
             Post.objects.create(poster = poster, body = body)
             
-            return render(request, "network/index.html", {
-                "message": "Post is succesfully posted"
-            })
+            return index(request)
         return JsonResponse({"message": "User is not authorized"}, status=301)
     return JsonResponse({"message": "Wrong request"}, status=500)
 
@@ -141,29 +142,16 @@ def get_currentuser(request):
 
 
 
-def get_allposts(request):
-    if request.method == "GET":
-        posts = Post.objects.all().order_by("-timestamp")
-        return JsonResponse([post.serialize() for post in posts], safe=False)
-    return JsonResponse({"message": "Wrong request"}, status=500)
-
-
-def get_posts(request, userid):
-    if request.method == "GET":
-        posts = Post.objects.filter(poster = userid).order_by("-timestamp").all()
-        return JsonResponse([post.serialize() for post in posts], safe=False)
-    return JsonResponse({"message": "Wrong request"}, status=500)
-
 def userpage(request, userid):
     user = User.objects.get(id = userid)
-    posts = Post.objects.filter(user = user.id)
+    posts = Post.objects.filter(poster = userid)
     followingcount = 0
     followercount = 0
     followingcount += Follows.objects.filter(follower=userid).count()
     followercount += Follows.objects.filter(followee=userid).count()
     return render(request, "network/profile.html", {
         'username': user.username,
-        'userid': user.id,
+        'userid': userid,
         'followers': followercount,
         'following': followingcount,
         'posts': posts,
@@ -171,4 +159,4 @@ def userpage(request, userid):
 
 def my_profile(request):
     user = request.user
-    userpage(request, user.id)
+    return userpage(request, user.id)

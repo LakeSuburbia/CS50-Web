@@ -18,16 +18,7 @@ class Post(models.Model):
     poster = models.ForeignKey('User', on_delete=models.CASCADE)
     body = models.TextField(max_length=140)
     timestamp = models.DateTimeField(auto_now_add=True)
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "posterid": self.poster.id,
-            "poster": self.poster.username,
-            "body": self.body,
-            "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
-            "likes": Likes.objects.filter(liked = self.id).count(),
-        }
+    like = models.IntegerField(default=0)
 
 class Likes(models.Model):
     liker = models.ForeignKey('User', on_delete=models.CASCADE)

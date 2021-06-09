@@ -19,6 +19,13 @@
     
     <!-- Post view is where the summation of posts goes -->
     <div id="posts-view">
-        
+        {% for post in posts%}
+        <div class="col post">
+            <a href="{% url 'user' post.poster.id%}"><h3>{{post.poster.username}}</h3></a> <p>
+
+            </p> {{post.body}} </p>
+            <p class='timestamp'>{{post.timestamp}} | {{post.like}} LIKES</p>
+        </div>
+        {% endfor %}
     </div>
 {% endblock %}
