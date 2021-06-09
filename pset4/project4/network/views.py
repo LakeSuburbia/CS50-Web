@@ -158,6 +158,8 @@ def userpage(request, userid):
         'follows': follows
         })
 
-def my_profile(request):
-    user = request.user
-    return userpage(request, user.id)
+def following(request):
+    followquery = Follows.objects.filter(follower=request.user.id)
+    followlist = [followee.followee.id for followee in followquery]
+    posts = Post.objects.filter(poster__in=followlist).order_by('-timestamp')
+    return render(request, "network/index.html", {'posts': posts})
