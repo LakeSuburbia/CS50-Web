@@ -2,6 +2,22 @@
 
 {% block body %}
 
+    
+    <!-- Profile view is the base for all profile pages -->
+    <div id="profile-view">
+        <div class="container">
+            <div id="username" class="row">
+                <h2>{{username}</h2>
+            </div>
+            {% if user.is_authenticated %}
+            <div id="follow-view" class="row">
+                <div id="followcount" class="col-sm"><b>Followers: {{followers}}</b></div>
+                <div id="followercount" class="col-sm"><b>Following: {{following}}</b></div>
+                <div id="follow-button" class="col-sm button">Follow</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 
     <!-- New Post is visible when visiting your own profile or when you're on the All Posts pages -->
     {% if user.is_authenticated %}

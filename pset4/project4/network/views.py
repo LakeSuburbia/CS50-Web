@@ -124,22 +124,7 @@ def edit_post(request, postid):
     return JsonResponse({"message": "Wrong request"}, status=500)
 
 
-def get_followcount(request, userid):
-    if request.method == "GET":
-        user = request.user
-        if user is not None:
-            if User.objects.filter(id=userid).exists:
-                followingcount = 0
-                followercount = 0
-                followingcount += Follows.objects.filter(follower=userid).count()
-                followercount += Follows.objects.filter(followee=userid).count()
-                return JsonResponse({
-                    "followers": followercount,
-                    "following": followingcount,
-                }, safe=False)
-            return JsonResponse({"message": "User does not exist"}, status=301)
-        return JsonResponse({"message": "User is not authorized"}, status=301)
-    return JsonResponse({"message": "Wrong request"}, status=500)
+
 
 def get_currentuser(request):
     if request.method == "GET":
@@ -170,4 +155,20 @@ def get_posts(request, userid):
     return JsonResponse({"message": "Wrong request"}, status=500)
 
 def userpage(request, userid):
-    return render(request, "network/index.html")
+    user = User.objects.get(id = userid)
+    posts = Post.objects.filter(user = user.id)
+    followingcount = 0
+    followercount = 0
+    followingcount += Follows.objects.filter(follower=userid).count()
+    followercount += Follows.objects.filter(followee=userid).count()
+    return render(request, "network/profile.html", {
+        'username': user.username,
+        'userid': user.id,
+        'followers': followercount,
+        'following': followingcount,
+        'posts': posts,
+        })
+
+def my_profile(request):
+    user = request.user
+    userpage(request, user.id)

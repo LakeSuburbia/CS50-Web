@@ -26,6 +26,7 @@ class Post(models.Model):
             "poster": self.poster.username,
             "body": self.body,
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
+            "likes": Likes.objects.filter(liked = self.id).count(),
         }
 
 class Likes(models.Model):
