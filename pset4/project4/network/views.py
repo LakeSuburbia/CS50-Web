@@ -87,14 +87,14 @@ def like(request, postid):
             if Likes.objects.filter(liker=liker, liked=liked).exists():
                 Likes.objects.get(liker=liker, liked=liked).delete()
                 liked.like -= 1
-                return JsonResponse({"message": "Post is succesfully unliked"}, status=201)
             else:
                 Follows.objects.create(liker=liker, liked=liked)
                 liked.like += 1
-                return JsonResponse({"message": "Post is succesfully liked"}, status=201)
+            return HttpResponse({
+                'likes': liked.like
+            })
         return JsonResponse({"message": "User is not authorized"}, status=301)
     return JsonResponse({"message": "Wrong request"}, status=500)
-
 
 def edit(request, postid):
     if request.method == "POST":
@@ -148,8 +148,6 @@ def get_currentuser(request):
                 "username":request.user.username, 
                 "userid":request.user.id
             }
-            #data = serializers.serialize("json", user, fields=('username'))
-            
             return JsonResponse(data)
         return JsonResponse({"message": "User is not authorized"}, status=301)
     return JsonResponse({"message": "Wrong request"}, status=500)

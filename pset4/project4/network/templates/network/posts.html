@@ -4,16 +4,25 @@
         <a href="{% url 'user' post.poster.id%}"><h3>{{post.poster.username}}</h3></a> <p>
 
         </p> {{post.body}} </p>
-        <p class='timestamp'>{{post.timestamp}} | {{post.like}} LIKES</p>
+        <p class='timestamp'>{{post.timestamp}}</p>
 
-        
+        <p>
         {% if post.poster.id == user.id %}
                 <button href="{% url 'edit' post.id %}">Edit</button>
         {% else %}
         {% if user.is_authenticated %}
-            <button>Like</button>
+            
+        <div class="p-2 bd-highlight">
+            <button id="likebutton likebutton{{post.id}}" data-id={{post.id}}>
+                LIKE
+            </button>
+        </div>
+
         {% endif %}
+        
         {% endif %}
+        <span id="likecount{{post.id}}">{{post.like}}</span> likes
+        </p>
 
     </div>
     <br />

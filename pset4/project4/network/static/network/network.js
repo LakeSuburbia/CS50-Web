@@ -5,49 +5,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#network').addEventListener('click', () => load_posts('allposts'));
     document.querySelector('#following').addEventListener('click', () => load_posts('following'));
 
-
-
-    const likeLinks = document.querySelectorAll('.like-link');
-
-    likeLinks.forEach(link => {
-        link.onclick = (event) => {
-            const post = event.target.parentElement;
-            try {
-                var like_author = document.querySelector('#username').innerHTML;
-            } catch (TypeError) {
-                alert("Please log in.");
-                return false;
-            }
-
-            const data = {
-                liker: like_author,
-                liked: post.dataset.id,
-            };
-
-            fetch('/like', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    event.target.innerHTML = data.likes;
-                })
-                .catch(error => console.error(error));
-        };
-    });
-
-
-
-
-
-
-
-
-
-
+    document.querySelectorAll('#likebutton').forEach(like => {
+        like.onclick = function() {
+          like(like.dataset.id);
+        }      
+      });
     // By default, load the inbox
     load_posts('allposts');
 });
@@ -70,3 +32,25 @@ function load_posts(postquery) {
 
 
   }
+
+  function like(postid) {
+    
+    fetch('/like', {
+        method: 'POST',
+        body: postid
+      })
+      .then(response => response.json())
+      .then(result => {
+
+        //Display the updated total like count
+        document.querySelector(`#likes${id}`).innerHTML = result.likes;
+        
+        //Display updated like without page load, use views after page load
+        if (result.is_liked === true) {
+          document.querySelector(`#likebutton${id}`).innerHTML = "like"
+        } else {
+          document.querySelector(`#likebutton${id}`).innerHTML = "unlike"
+        }
+
+    });
+};
