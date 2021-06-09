@@ -11,8 +11,8 @@
             </div>
             {% if user.is_authenticated %}
             <div id="follow-view" class="row">
-                <div id="followcount" class="col-sm">Following: </div>
-                <div id="followercount" class="col-sm">Followers: </div>
+                <div id="followcount" class="col-sm"></div>
+                <div id="followercount" class="col-sm"></div>
                 <div id="follow-button" class="col-sm button">Follow</div>
             </div>
             {% endif %}
@@ -25,7 +25,7 @@
             <h4>New Post</h4>
             <form action="{% url 'make_post' %}" method = "POST">
                 {% csrf_token %} 
-                <textarea maxlength="140" name = "body"></textarea>
+                <textarea maxlength="140" name = "body"  class="text-area"></textarea>
                 <br/>
                 <button type="submit">Post</button>
             </form>

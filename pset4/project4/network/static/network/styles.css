@@ -2,3 +2,26 @@
     color: gray;
     text-decoration: italic;
 }
+
+#new-post{
+    margin-left: 20%;
+    max-width: 800px;
+    margin-bottom: 50px;
+}
+
+.timestamp{
+    text-emphasis: italic;
+    text-decoration: grey;
+    font-size: 8;
+}
+
+.post{
+    margin-left: 20%;
+    max-width: 400px;
+    background-color:cornflowerblue;
+}
+
+
+.text-area{
+    min-width: 400px;
+}

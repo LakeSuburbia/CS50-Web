@@ -5,6 +5,8 @@ from django.core import serializers
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
 
@@ -100,8 +102,7 @@ def make_post(request):
         poster = request.user
         if poster is not None:
             body = request.POST["body"]
-            time = timezone.now()
-            Post.objects.create(poster = poster, body = body, time = time)
+            Post.objects.create(poster = poster, body = body)
             
             return render(request, "network/index.html", {
                 "message": "Post is succesfully posted"
@@ -132,10 +133,10 @@ def get_followcount(request, userid):
                 followercount = 0
                 followingcount += Follows.objects.filter(follower=userid).count()
                 followercount += Follows.objects.filter(followee=userid).count()
-                return JsonResponse([{
+                return JsonResponse({
                     "followers": followercount,
-                    "following": followingcount
-                }], safe=False)
+                    "following": followingcount,
+                }, safe=False)
             return JsonResponse({"message": "User does not exist"}, status=301)
         return JsonResponse({"message": "User is not authorized"}, status=301)
     return JsonResponse({"message": "Wrong request"}, status=500)
@@ -152,3 +153,21 @@ def get_currentuser(request):
             return JsonResponse(data)
         return JsonResponse({"message": "User is not authorized"}, status=301)
     return JsonResponse({"message": "Wrong request"}, status=500)
+
+
+
+def get_allposts(request):
+    if request.method == "GET":
+        posts = Post.objects.all().order_by("-timestamp")
+        return JsonResponse([post.serialize() for post in posts], safe=False)
+    return JsonResponse({"message": "Wrong request"}, status=500)
+
+
+def get_posts(request, userid):
+    if request.method == "GET":
+        posts = Post.objects.filter(poster = userid).order_by("-timestamp").all()
+        return JsonResponse([post.serialize() for post in posts], safe=False)
+    return JsonResponse({"message": "Wrong request"}, status=500)
+
+def userpage(request, userid):
+    return render(request, "network/index.html")
