@@ -4,7 +4,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import *
+from .models import Post, User, Likes, Follows
 
 
 def index(request):
@@ -79,20 +79,29 @@ def follow(request, userid):
     return userpage(request, userid)
 
 def like(request, postid):
-    if request.method == "POST":
+    if request.method == "GET":
         liker = request.user
         if liker is not None:
-            liked = Post.objects.get(postid)
+            liked = Post.objects.get(id = postid)
+            is_liked = False
 
             if Likes.objects.filter(liker=liker, liked=liked).exists():
                 Likes.objects.get(liker=liker, liked=liked).delete()
                 liked.like -= 1
+                liked.save()
+
             else:
-                Follows.objects.create(liker=liker, liked=liked)
+                Likes.objects.create(liker=liker, liked=liked)
                 liked.like += 1
-            return HttpResponse({
-                'likes': liked.like
-            })
+                liked.save()
+                is_liked=True
+
+            data = {
+                "likes": liked.like,
+                "is_liked": is_liked,
+            }
+            
+            return JsonResponse(data)
         return JsonResponse({"message": "User is not authorized"}, status=301)
     return JsonResponse({"message": "Wrong request"}, status=500)
 
