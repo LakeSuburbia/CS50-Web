@@ -9,10 +9,10 @@
     margin-left: 20%;
 }
 
-#new-post{
+#new-post, .edit-post{
     margin-left: 20%;
     max-width: 800px;
-    margin-bottom: 50px;
+    margin-bottom: 45px;
 }
 
 .timestamp{
@@ -25,6 +25,7 @@
     margin-left: 20%;
     max-width: 400px;
     background-color:cornflowerblue;
+    min-height: 50px;
 }
 
 

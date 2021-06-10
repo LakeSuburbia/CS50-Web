@@ -134,18 +134,14 @@ def like(request, postid):
 
 def edit(request, postid):
     if request.method == "POST":
-        liker = request.user
-        if liker is not None:
-            liked = Post.objects.get(postid)
-
-            if Likes.objects.filter(liker=liker, liked=liked).exists():
-                Likes.objects.get(liker=liker, liked=liked).delete()
-                liked.like -= 1
-                return JsonResponse({"message": "Post is succesfully unliked"}, status=201)
-            else:
-                Follows.objects.create(liker=liker, liked=liked)
-                liked.like += 1
-                return JsonResponse({"message": "Post is succesfully liked"}, status=201)
+        poster = request.user
+        if poster is not None:
+            post = Post.objects.get(id = postid)
+            if poster == post.poster:
+                post.body = request.POST["body"]
+                post.save()
+                next = request.POST.get('next', '/')
+                return HttpResponseRedirect(next)
         return JsonResponse({"message": "User is not authorized"}, status=301)
     return JsonResponse({"message": "Wrong request"}, status=500)
 
@@ -192,7 +188,7 @@ def get_currentuser(request):
 
 def userpage(request, userid):
     user = User.objects.get(id = userid)
-    posts = Post.objects.filter(poster = userid)
+    posts = Post.objects.filter(poster = userid).order_by("-timestamp")
     posts = paginate_posts(request, posts)
     followingcount = 0
     followercount = 0

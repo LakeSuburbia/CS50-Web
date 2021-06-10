@@ -5,34 +5,13 @@
 
 <div id="posts-view">
     {% for post in posts%}
-    <div class="col post">
-        <a href="{% url 'user' post.poster.id%}"><h3>{{post.poster.username}}</h3></a> <p>
-
-        </p> {{post.body}} </p>
-        <p class='timestamp'>{{post.timestamp}}</p>
-
-        <p>
-        {% if post.poster.id == user.id %}
-                <button href="{% url 'edit' post.id %}">Edit</button>
-        {% else %}
-        {% if user.is_authenticated %}
-            
-        <div class="p-2 bd-highlight">
-            <button id="likebutton{{post.id}}" data-id={{post.id}} onload="set(dataset.id)" onclick="like(dataset.id)">
-                {% if post.liked %}
-                    unlike
-                {% else %}
-                    like
-                {% endif %}
-            </button>
-        </div>
-
-        {% endif %}
-        
-        {% endif %}
-        <span id="likecount{{post.id}}">{{post.like}}</span> likes
-        </p>
-
+    {% if post.poster == user %}
+    <div id ="edit-post{{post.id}}" class="edit-post" style="display:none">
+        {% include 'network/editpost.html' %}
+    </div>
+    {% endif %}
+    <div class="col post" id = "view-post{{post.id}}">
+        {% include 'network/viewpost.html' %}
     </div>
     <br />
     {% endfor %}
@@ -61,6 +40,19 @@
                 document.querySelector("#likebutton"+postid).innerHTML = "like"
             }
         });
+    };
+
+
+    function edit(postid) {
+        console.log("I edit "+postid)
+        document.querySelector("#edit-post"+postid).style.display='block';
+        document.querySelector("#view-post"+postid).style.display='none';
+    };
+
+    function edited(postid) {
+        console.log("I edited "+postid)
+        document.querySelector("#edit-post"+postid).style.display='none';
+        document.querySelector("#view-post"+postid).style.display='block';
     };
 
 </script>

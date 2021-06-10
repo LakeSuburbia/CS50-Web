@@ -1,0 +1,8 @@
+<form action="{% url 'edit' post.id %}" method = "POST">
+    {% csrf_token %} 
+    <p>Edit your post!</p>
+    <input type="hidden" name="next" value="{{ request.path }}">
+    <textarea maxlength="140" name = "body"  class="text-area">{{post.body}}</textarea>
+    <br/>
+    <button type="submit">Edit post</button>
+</form>
