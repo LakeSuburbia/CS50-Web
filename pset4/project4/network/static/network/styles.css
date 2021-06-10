@@ -5,6 +5,10 @@
     text-decoration: italic;
 }
 
+#footer{
+    margin-left: 20%;
+}
+
 #new-post{
     margin-left: 20%;
     max-width: 800px;

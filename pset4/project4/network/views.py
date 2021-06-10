@@ -22,9 +22,19 @@ def extend_posts(request, posts):
 def render_posts(request, posts, frontpage):
     posts = extend_posts(request, posts)
 
+    p = Paginator(posts, 10)
+
+    page_num = request.GET.get('page', 1)
+
+    try:
+        page = p.page(page_num)
+    except EmptyPage:
+        page = p.page(1)
+
     return render(request, "network/index.html", {
-        'posts': posts,
+        'posts': page,
         'frontpage': frontpage,
+        'nextpage': p.num_pages,
         })
 
 
