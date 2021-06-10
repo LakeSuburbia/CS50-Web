@@ -5,14 +5,27 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .models import Post, User, Likes, Follows
+def extend_posts(request, posts):
+    likes = Likes.objects.filter(liker = request.user)
+    for post in posts:
+        post.liked = False
+        for like in likes:
+            if post == like.liked:
+                post.liked = True
+    return posts
+
+def render_posts(request, posts, frontpage):
+    posts = extend_posts(request, posts)
+
+    return render(request, "network/index.html", {
+        'posts': posts,
+        'frontpage': frontpage,
+        })
 
 
 def index(request):
     posts = Post.objects.all().order_by("-timestamp")
-    return render(request, "network/index.html", {
-        'posts': posts,
-        'frontpage': True,
-        })
+    return render_posts(request, posts, True)
 
 
 def login_view(request):
@@ -190,7 +203,4 @@ def following(request):
     followquery = Follows.objects.filter(follower=request.user.id)
     followlist = [followee.followee.id for followee in followquery]
     posts = Post.objects.filter(poster__in=followlist).order_by('-timestamp')
-    return render(request, "network/index.html", {
-        'posts': posts,
-        'frontpage': False,
-    })
+    return render_posts(request, posts, True)

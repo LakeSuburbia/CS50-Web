@@ -1,7 +1,7 @@
 {% load static %}
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <link href="{% static 'network/styles.css' %}" rel="stylesheet">
-<script src="{% static 'network/network.js' %}"></script>
+
 
 <div id="posts-view">
     {% for post in posts%}
@@ -18,8 +18,12 @@
         {% if user.is_authenticated %}
             
         <div class="p-2 bd-highlight">
-            <button id="likebutton{{post.id}}" data-id={{post.id}} onclick="like(dataset.id)">
-                LIKE
+            <button id="likebutton{{post.id}}" data-id={{post.id}} onload="set(dataset.id)" onclick="like(dataset.id)">
+                {% if post.liked %}
+                    unlike
+                {% else %}
+                    like
+                {% endif %}
             </button>
         </div>
 
@@ -36,29 +40,19 @@
 
 
 <script>
-    
     function like(postid) {
         console.log("I like post "+postid)
         fetch("/like/"+postid)
         .then(response => response.json())
         .then(post => {
-            // Print email
             console.log(post);
-
-            // ... do something else with email ...
-            //Display the updated total like count
-            document.querySelector("#likes"+postid).innerHTML = post.likes;
-            
-            //Display updated like without page load, use views after page load
+            document.querySelector("#likecount"+postid).innerHTML = post.likes;
             if (post.is_liked === true) {
-                document.querySelector("#likebutton"+postid).innerHTML = "like"
-            } else {
                 document.querySelector("#likebutton"+postid).innerHTML = "unlike"
+            } else {
+                document.querySelector("#likebutton"+postid).innerHTML = "like"
             }
         });
-    
-            
-        
-};
+    };
 
 </script>
