@@ -4,10 +4,13 @@
 
 
     <!-- New Post is visible when visiting your own profile or when you're on the All Posts pages -->
-    {% if user.is_authenticated and frontpage %}
-        {% include 'network/newpost.html' %}
+    {% if frontpage %}
+        {% if user.is_authenticated %}
+            {% include 'network/newpost.html' %}
+        {% endif %}
         <h2 id="message"> These are the posts of all the people.</h2>
     {% else %}
+
     <h2 id="message"> These are the posts of the people you follow.</h2>
     {% endif %}
 
