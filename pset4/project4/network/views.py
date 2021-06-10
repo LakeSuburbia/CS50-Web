@@ -3,10 +3,15 @@ from django.db import IntegrityError
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.core.paginator import Paginator, EmptyPage
 
 from .models import Post, User, Likes, Follows
 def extend_posts(request, posts):
-    likes = Likes.objects.filter(liker = request.user)
+    user = request.user
+    try:
+        likes = Likes.objects.filter(liker = user)
+    except:
+        likes = []
     for post in posts:
         post.liked = False
         for like in likes:
