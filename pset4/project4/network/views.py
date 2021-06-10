@@ -20,23 +20,22 @@ def extend_posts(request, posts):
     return posts
 
 def render_posts(request, posts, frontpage):
-    posts = extend_posts(request, posts)
-
-    p = Paginator(posts, 10)
-
-    page_num = request.GET.get('page', 1)
-
-    try:
-        page = p.page(page_num)
-    except EmptyPage:
-        page = p.page(1)
+    page = paginate_posts(request, posts)
 
     return render(request, "network/index.html", {
         'posts': page,
         'frontpage': frontpage,
-        'nextpage': p.num_pages,
         })
 
+def paginate_posts(request, posts):
+    posts = extend_posts(request, posts)
+    p = Paginator(posts, 10)
+    page_num = request.GET.get('page', 1)
+    try:
+        page = p.page(page_num)
+    except EmptyPage:
+        page = p.page(1)
+    return page
 
 def index(request):
     posts = Post.objects.all().order_by("-timestamp")
@@ -194,6 +193,7 @@ def get_currentuser(request):
 def userpage(request, userid):
     user = User.objects.get(id = userid)
     posts = Post.objects.filter(poster = userid)
+    posts = paginate_posts(request, posts)
     followingcount = 0
     followercount = 0
     following = Follows.objects.filter(follower=userid)
